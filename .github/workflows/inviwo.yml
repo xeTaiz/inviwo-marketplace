@@ -6,7 +6,8 @@ env:
   BUILD_TYPE: Release
   IVW_VCPKG_SHA: '2a6442cb934de2f99c8ac5bbd8a9dcf5538aee98'   # vcpkg "version" to use
   #IVW_VCPKG_SHA: '399458a9d9a763c0e06cc979464a17074fe8517d'  # nuget verbose version, git remote add inviwo https://github.com/inviwo/vcpkg.git
-  VCPKG_BINARY_SOURCES : 'clear;nuget,GitHub,readwrite'       # recognized by vcpkg
+  VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'        # recognized by vcpkg
+  # QT_DEBUG_PLUGINS: 1                                         # print qt plugin debug info
 
 jobs:
   build:
@@ -58,23 +59,30 @@ jobs:
     - name: Apt Install
       shell: bash
       if: runner.os == 'Linux'
-      run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libglew-dev ninja-build doxygen
+      run: |
+        sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libglew-dev ninja-build doxygen-latex
       
     - name: Brew Install
       shell: bash
       if: runner.os == 'macOS'
-      run: brew install ninja doxygen
+      run: |
+        brew install ninja doxygen
+        brew cask install basictex
+        eval "$(/usr/libexec/path_helper)"
+        echo "::add-path::$(dirname $(which latex))"
 
     - name: Install Scoop
       if: runner.os == 'Windows'
       run: |
         Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
         scoop bucket add extras
-        scoop install nsis doxygen
-
+        scoop install nsis doxygen latex
+        echo "::add-path::~/scoop/shims"
+        echo "::add-path::$(Split-Path -Path (Get-Command dvips).Path -Parent)"  
+        
     - name: VCPKG Install
       shell: bash
-      run: > 
+      run: >
         vcpkg --triplet ${{ matrix.triplet }} install
         assimp benchmark cimg eigen3 fmt freetype glfw3 glm gtest zlib 
         hdf5[cpp,zlib] libjpeg-turbo libpng minizip nlohmann-json 
@@ -109,14 +117,15 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
         -DIVW_CFG_CMAKE_DEBUG=ON
         -DIVW_CFG_PRECOMPILED_HEADERS=OFF
+        -DIVW_CFG_FORCE_ASSERTIONS=ON 
         -DIVW_DOXYGEN_PROJECT=ON
+        -DIVW_PACKAGE_INSTALLER=ON
         -DIVW_TEST_UNIT_TESTS_RUN_ON_BUILD=OFF
         -DIVW_TEST_BENCHMARKS=OFF
         -DIVW_TEST_INTEGRATION_TESTS=ON
         -DIVW_USE_OPENMP=OFF
         -DIVW_USE_OPENEXR=OFF
         -DIVW_MODULE_CIMG=ON
-        -DIVW_PACKAGE_INSTALLER=ON
         -DIVW_USE_EXTERNAL_ASSIMP=ON
         -DIVW_USE_EXTERNAL_BENCHMARK=ON
         -DIVW_USE_EXTERNAL_EIGEN=ON
@@ -136,7 +145,10 @@ jobs:
         -DIVW_USE_EXTERNAL_PYBIND11=ON
         -DIVW_USE_EXTERNAL_OPENEXR=ON
         ${{ matrix.cmake }}
-         
+    
+    - name: Setup C++
+      uses: Trass3r/setup-cpp@v1
+    
     - name: Build
       timeout-minutes: 180
       working-directory: build
@@ -171,6 +183,7 @@ jobs:
     #    path: build/inviwo-v*.zip
 
     - name: Doxygen
+      if: runner.os != 'Linux' # generate processor previews fails to load qt plugins
       working-directory: build
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target DOXY-ALL 
