@@ -42,7 +42,7 @@ jobs:
         set -x
         cd $VCPKG_INSTALLATION_ROOT
         git fetch --all
-        git reset --hard $IVW_VCPKG_SHA
+        git checkout $IVW_VCPKG_SHA
         ./bootstrap-vcpkg.sh
             
     - name: 'Setup NuGet Credentials'
