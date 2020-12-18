@@ -4,7 +4,7 @@ on: [push]
 
 env:
   BUILD_TYPE: Release
-  IVW_VCPKG_SHA: '0bf3923f9fab4001c00f0f429682a0853b5749e0'   # vcpkg "version" to use
+  IVW_VCPKG_SHA: '66bac12e4e54cc858bdf7f93c5786010b6812b13'   # vcpkg "version" to use
   #IVW_VCPKG_SHA: '399458a9d9a763c0e06cc979464a17074fe8517d'  # nuget verbose version, git remote add inviwo https://github.com/inviwo/vcpkg.git
   VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'        # recognized by vcpkg
   # QT_DEBUG_PLUGINS: 1                                         # print qt plugin debug info
