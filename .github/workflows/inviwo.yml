@@ -69,7 +69,7 @@ jobs:
         brew install ninja doxygen
         brew cask install basictex
         eval "$(/usr/libexec/path_helper)"
-        echo "::add-path::$(dirname $(which latex))"
+        echo "$(dirname $(which latex))" >> $GITHUB_PATH
 
     - name: Install Scoop
       if: runner.os == 'Windows'
@@ -77,8 +77,8 @@ jobs:
         Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
         scoop bucket add extras
         scoop install nsis doxygen latex
-        echo "::add-path::~/scoop/shims"
-        echo "::add-path::$(Split-Path -Path (Get-Command dvips).Path -Parent)"  
+        echo "~/scoop/shims" >> $GITHUB_PATH
+        echo "$(Split-Path -Path (Get-Command dvips).Path -Parent)" >> $GITHUB_PATH
         
     - name: VCPKG Install
       shell: bash
