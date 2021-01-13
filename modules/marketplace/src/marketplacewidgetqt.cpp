@@ -28,7 +28,6 @@
  *********************************************************************************/
 
 #include <inviwo/marketplace/marketplacewidgetqt.h>
-#include <inviwo/marketplace/marketmodulewidgetqt.h>
 #include <modules/qtwidgets/inviwoqtutils.h>
 #include <QColor>
 #include <QMainWindow>
@@ -47,13 +46,13 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     auto vLayout = new QVBoxLayout();
     mainWidget->setLayout(vLayout);
 
-    auto ex1 = new MarketModuleWidgetQt("TestModule1", mainWidget);
-    auto ex2 = new MarketModuleWidgetQt("TestModule2", mainWidget);
-    auto ex3 = new MarketModuleWidgetQt("TestModule3", mainWidget);
+    for (const auto data : manager_.getModules()) {
+        LogInfo("adding a module");
+        auto w = new MarketModuleWidgetQt(data, mainWidget);
+        moduleWidgets_.push_back(w);
+        vLayout->addWidget(w);
+    }
 
-    vLayout->addWidget(ex1);
-    vLayout->addWidget(ex2);
-    vLayout->addWidget(ex3);
 }
 
 }  // namespace inviwo
