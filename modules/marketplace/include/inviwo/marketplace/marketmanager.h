@@ -56,9 +56,11 @@ public:
     std::optional<std::string> gitClone(const std::string&, const std::string&);
 
     void updateModuleData();
-    void cloneModule(const std::string&);
-    void updateModule(const std::string&);
-    void cmakeConfigure(const ModuleData& data);
+    int cloneModule(const ModuleData&);
+    int updateModule(const ModuleData&);
+    int cmakeConfigure(const ModuleData& data);
+    int cmakeGenerate(const ModuleData& data);
+    int build(const ModuleData& data);
 
     const std::vector<ModuleData> getModules() const;
 

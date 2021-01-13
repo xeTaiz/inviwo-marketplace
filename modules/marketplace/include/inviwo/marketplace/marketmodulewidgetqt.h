@@ -36,9 +36,12 @@
 #include <vector>
 #include <string>
 
+#include <QFrame>
+
 class QWidget;
 class QTextEdit;
 class QToolButton;
+class QPushButton;
 class QImage;
 class QLabel;
 
@@ -48,9 +51,9 @@ namespace inviwo {
  * \brief QT Widget for Modules Marketplace
  * Implements the items representing one module
  */
-class IVW_MODULE_MARKETPLACE_API MarketModuleWidgetQt : public QWidget {
+class IVW_MODULE_MARKETPLACE_API MarketModuleWidgetQt : public QFrame {
 public:
-    MarketModuleWidgetQt(const ModuleData& data, QWidget* parent);
+    MarketModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
     virtual ~MarketModuleWidgetQt() = default;
     MarketModuleWidgetQt(const MarketModuleWidgetQt&) = delete;
     MarketModuleWidgetQt& operator=(const MarketModuleWidgetQt&) = delete;
@@ -58,24 +61,25 @@ public:
 protected:
 
 private:
+    std::shared_ptr<MarketManager> manager_;
+
     QImage* preview_;
     QLabel* moduleName_;
     QTextEdit* description_;
+
+    QPushButton* cloneBtn_;
+    QPushButton* configureBtn_;
+    QPushButton* generateBtn_;
+    QPushButton* buildBtn_;
 
     QToolButton* installBtn_;
     QLabel* downloadStatus_;
     QLabel* installStatus_;
     QLabel* loadingStatus_;
 
-    bool downloaded_;
+    bool cloned_;
     bool installed_;
     bool enabled_;
-
-    void updateModuleList();
-    void pullModule(const std::string);
-    void buildModule(const std::string);
-
-
 };
 
 }  // namespace inviwo
