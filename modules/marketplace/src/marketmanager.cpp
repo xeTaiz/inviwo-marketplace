@@ -28,12 +28,13 @@
  *********************************************************************************/
 
 #include <inviwo/marketplace/marketmanager.h>
-#include <inviwo/core/common/inviwo.h>
+#include <inviwo/core/util/filesystem.h>
 
 #include <filesystem>
 #include <optional>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <unordered_set>
 
 #include <QString>
@@ -63,13 +64,17 @@ std::optional<std::string> getModuleName(const std::filesystem::path& path) {
     return std::nullopt;
 }
 
-MarketManager::MarketManager()
-    : repositoryUrl_("https://github.com/mstegmaier/inviwo-marketplace")
-    , externalModulesPath_("/home/dome/.inviwo/marketplace/")
+MarketManager::MarketManager(const InviwoApplication* app)
+    : app_(app)
+    , repositoryUrl_("https://github.com/mstegmaier/inviwo-marketplace")
+    , externalModulesPath_(inviwo::filesystem::getInviwoUserSettingsPath() + "/marketplace/")
     , gitExecutablePath_("/usr/bin/git")
     , cmakeExecutablePath_("/usr/bin/cmake")
+    , inviwoSourcePath_(app->getBasePath())
     , inviwoBuildPath_("/home/dome/.inviwo/marketplace-build/")
     {
+        LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
+        LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
         updateModuleData();
         for (auto md : modules_) {
             if (md.path){
@@ -148,6 +153,11 @@ void MarketManager::updateModuleData() {
     modules_.clear();
     for (auto url : urls) {
         auto moduleName = url.substr(url.rfind('/')+1);
+        size_t pos = moduleName.find("inviwo");
+        if (pos != std::string::npos) {
+            moduleName.erase(pos, 6);
+        }
+        moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
         std::filesystem::path path (modules_path / moduleName);
         if (std::filesystem::exists(path)) {
             modules_.push_back({url, moduleName, path});

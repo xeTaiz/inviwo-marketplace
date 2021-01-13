@@ -29,6 +29,7 @@
 #pragma once
 
 #include <inviwo/marketplace/marketplacemoduledefine.h>
+#include <inviwo/core/common/inviwoapplication.h>
 
 #include <string>
 #include <optional>
@@ -50,7 +51,7 @@ struct ModuleData {
  */
 class IVW_MODULE_MARKETPLACE_API MarketManager {
 public:
-    MarketManager();
+    MarketManager(const InviwoApplication*);
     virtual ~MarketManager() = default;
 
     std::optional<std::string> gitClone(const std::string&, const std::string&);
@@ -65,8 +66,10 @@ public:
     const std::vector<ModuleData> getModules() const;
 
     private:
+        const InviwoApplication* app_;
         std::string gitExecutablePath_;
         std::string cmakeExecutablePath_;
+        std::string inviwoSourcePath_;
         std::string inviwoBuildPath_;
         std::string externalModulesPath_;
         std::string repositoryUrl_;
