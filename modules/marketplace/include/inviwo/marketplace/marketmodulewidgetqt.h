@@ -29,6 +29,7 @@
 #pragma once
 
 #include <inviwo/marketplace/marketplacemoduledefine.h>
+#include <inviwo/marketplace/marketmanager.h>
 #include <inviwo/qt/editor/inviwomainwindow.h>
 #include <modules/qtwidgets/inviwodockwidget.h>
 
@@ -49,7 +50,7 @@ namespace inviwo {
  */
 class IVW_MODULE_MARKETPLACE_API MarketModuleWidgetQt : public QWidget {
 public:
-    MarketModuleWidgetQt(const std::string&, QWidget*);
+    MarketModuleWidgetQt(const ModuleData& data, QWidget* parent);
     virtual ~MarketModuleWidgetQt() = default;
     MarketModuleWidgetQt(const MarketModuleWidgetQt&) = delete;
     MarketModuleWidgetQt& operator=(const MarketModuleWidgetQt&) = delete;
@@ -60,7 +61,11 @@ private:
     QImage* preview_;
     QLabel* moduleName_;
     QTextEdit* description_;
+
     QToolButton* installBtn_;
+    QLabel* downloadStatus_;
+    QLabel* installStatus_;
+    QLabel* loadingStatus_;
 
     bool downloaded_;
     bool installed_;

@@ -29,6 +29,7 @@
 
 #include <inviwo/marketplace/marketmodulewidgetqt.h>
 #include <modules/qtwidgets/inviwoqtutils.h>
+
 #include <QWidget>
 #include <QColor>
 #include <QMainWindow>
@@ -53,11 +54,10 @@ QToolButton* createButton(const std::string& str, const std::string& iconpath, Q
     return button;
 }
 
-MarketModuleWidgetQt::MarketModuleWidgetQt(const std::string& name, QWidget* parent)
+MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* parent)
     : QWidget(parent)
     {
         // Get image, description etc
-
 
         // Horizontal Layout:    Image, Title, Description, Buttons
         auto hLayout = new QHBoxLayout();
@@ -75,8 +75,11 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const std::string& name, QWidget* par
         hLayout->addWidget(textWidget);
         textWidget->setLayout(vLayoutText);
 
-        moduleName_ = new QLabel(QString::fromStdString(name));
+        moduleName_ = new QLabel(QString::fromStdString(data.name), textWidget);
         vLayoutText->addWidget(moduleName_);
+
+        auto repoUrl = new QLabel(QString::fromStdString(data.url), textWidget);
+        vLayoutText->addWidget(repoUrl);
 
         description_ = new QTextEdit(textWidget);
         description_->setFrameShape(QFrame::NoFrame);
