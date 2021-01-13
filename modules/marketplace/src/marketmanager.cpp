@@ -161,22 +161,20 @@ const std::vector<ModuleData> MarketManager::getModules() const {
     return modules_;
 }
 
-void MarketManager::cloneModule(const std::string& moduleUrl) {
+int MarketManager::cloneModule(const ModuleData& data) {
     const std::filesystem::path modules_path (externalModulesPath_);
-    auto data = std::find_if(modules_.begin(), modules_.end(), [moduleUrl](const ModuleData& m) -> bool {
-        return m.url.compare(moduleUrl) == 0;
-    });
-    const auto dir_name_ = gitClone(data->url, modules_path.string());
+
+    const auto dir_name_ = gitClone(data.url, modules_path.string());
     if (!dir_name_) {
-        util::log(IVW_CONTEXT, "Unable to clone " + data->url, LogLevel::Warn, LogAudience::User);
-        return;
+        util::log(IVW_CONTEXT, "Unable to clone " + data.url, LogLevel::Warn, LogAudience::User);
+        return 1;
     }
     std::string dir_name = *dir_name_;
     const auto module_name_ = getModuleName(modules_path / dir_name / "CMakeLists.txt");
     if (!module_name_) {
-        util::log(IVW_CONTEXT, "Could not parse module name of module " + data->url, LogLevel::Warn,
+        util::log(IVW_CONTEXT, "Could not parse module name of module " + data.url, LogLevel::Warn,
                   LogAudience::User);
-        return;
+        return 1;
     }
     const auto& module_name = *module_name_;
 
@@ -191,11 +189,48 @@ void MarketManager::cloneModule(const std::string& moduleUrl) {
         std::filesystem::rename(modules_path / dir_name, modules_path / module_name);
         dir_name = module_name;
     }
-    data->path = modules_path / dir_name;
+
+    // data.path.emplace(modules_path / dir_name);
     // clonepull_->setDisplayName("Pull Repo");
+    return 0;
 }
 
-void MarketManager::cmakeConfigure(const ModuleData& data) {
+int MarketManager::updateModule(const ModuleData& data) {
+    QProcess process;
+
+    if (!data.path) {
+        LogInfo("ModuleData does not have a path");
+        return 1;
+    }
+
+    process.setProgram(QString::fromStdString(gitExecutablePath_));
+    process.setWorkingDirectory(QString::fromStdString(data.path->string()));
+
+    QStringList arguments;
+    arguments << "checkout"
+            << ".";
+    process.setArguments(arguments);
+    process.start();
+    process.waitForFinished();
+    util::log(IVW_CONTEXT, "Checkout with exit code " + std::to_string(process.exitCode()),
+            LogLevel::Info, LogAudience::User);
+
+    arguments.clear();
+    arguments << "rebase";
+    process.setArguments(arguments);
+    process.start();
+
+    process.waitForFinished();
+    std::cerr << "terminated with exit code " << process.exitCode() << std::endl;
+    std::cerr << "stdout:\n" << process.readAllStandardOutput().constData() << std::endl;
+    std::cerr << "stderr:\n" << process.readAllStandardError().constData() << std::endl;
+
+    util::log(IVW_CONTEXT, "Finished pull with exit code " + std::to_string(process.exitCode()),
+            LogLevel::Info, LogAudience::User);
+    return process.exitCode();
+}
+
+int MarketManager::cmakeConfigure(const ModuleData& data) {
     QProcess process;
 
     process.setProgram(QString::fromStdString(cmakeExecutablePath_));
@@ -221,8 +256,15 @@ void MarketManager::cmakeConfigure(const ModuleData& data) {
     util::log(IVW_CONTEXT,
               "Finished configure with exit code " + std::to_string(process.exitCode()),
               LogLevel::Info, LogAudience::User);
+
+    return process.exitCode();
 }
 
-void MarketManager::updateModule(const std::string& moduleUrl) {}
+int MarketManager::cmakeGenerate(const ModuleData& data) {
+    return 0;
+}
 
+int MarketManager::build(const ModuleData& data) {
+    return 0;
+}
 }  // namespace inviwo

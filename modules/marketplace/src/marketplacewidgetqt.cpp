@@ -39,6 +39,7 @@ namespace inviwo {
 
 MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent)
     : InviwoDockWidget(utilqt::toQString(widgetName), parent, "ModulesMarketplace")
+    , manager_(std::make_shared<MarketManager>())
     {
     auto mainWidget = new QWidget(this);
     this->setContents(mainWidget);
@@ -46,9 +47,10 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     auto vLayout = new QVBoxLayout();
     mainWidget->setLayout(vLayout);
 
-    for (const auto data : manager_.getModules()) {
+    manager_->updateModuleData();
+    for (const auto data : manager_->getModules()) {
         LogInfo("adding a module");
-        auto w = new MarketModuleWidgetQt(data, mainWidget);
+        auto w = new MarketModuleWidgetQt(data, mainWidget, manager_);
         moduleWidgets_.push_back(w);
         vLayout->addWidget(w);
     }

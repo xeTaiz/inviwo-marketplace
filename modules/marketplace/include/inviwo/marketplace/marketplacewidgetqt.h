@@ -57,7 +57,7 @@ public:
 protected:
 
 private:
-    MarketManager manager_;
+    std::shared_ptr<MarketManager> manager_;
 
     std::vector<MarketModuleWidgetQt*> moduleWidgets_;
     std::vector<std::string> modules_;

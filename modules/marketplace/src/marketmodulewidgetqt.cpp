@@ -31,11 +31,13 @@
 #include <modules/qtwidgets/inviwoqtutils.h>
 
 #include <QWidget>
+#include <QFrame>
 #include <QColor>
 #include <QMainWindow>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
+#include <QPushButton>
 #include <QString>
 #include <QTextEdit>
 #include <QIcon>
@@ -54,9 +56,12 @@ QToolButton* createButton(const std::string& str, const std::string& iconpath, Q
     return button;
 }
 
-MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* parent)
-    : QWidget(parent)
+MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager)
+    : QFrame(parent)
+    , manager_(manager)
     {
+        setFrameStyle(QFrame::Box | QFrame::Plain);
+        setLineWidth(1);
         // Get image, description etc
 
         // Horizontal Layout:    Image, Title, Description, Buttons
@@ -74,13 +79,13 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         auto vLayoutText = new QVBoxLayout();
         hLayout->addWidget(textWidget);
         textWidget->setLayout(vLayoutText);
-
+        // Name
         moduleName_ = new QLabel(QString::fromStdString(data.name), textWidget);
         vLayoutText->addWidget(moduleName_);
-
+        // URL
         auto repoUrl = new QLabel(QString::fromStdString(data.url), textWidget);
         vLayoutText->addWidget(repoUrl);
-
+        // Description TODO
         description_ = new QTextEdit(textWidget);
         description_->setFrameShape(QFrame::NoFrame);
         description_->setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -91,10 +96,69 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         auto vLayoutBtn = new QVBoxLayout();
         hLayout->addWidget(buttonWidget);
         buttonWidget->setLayout(vLayoutBtn);
-
+        // Install
         installBtn_ = createButton("Download", ":/svgicons/save.svg", buttonWidget);
         installBtn_->setObjectName("Download");
         installBtn_->setToolTip("Download Module");
+        vLayoutBtn->addWidget(installBtn_);
+
+        bool hasPath = static_cast<bool>(data.path);
+        cloneBtn_ = new QPushButton(QString("Clone"), buttonWidget);
+        cloneBtn_->setEnabled(!hasPath);
+        vLayoutBtn->addWidget(cloneBtn_);
+
+        configureBtn_ = new QPushButton(QString("Configure"), buttonWidget);
+        configureBtn_->setEnabled(hasPath);
+        vLayoutBtn->addWidget(configureBtn_);
+
+        generateBtn_ = new QPushButton(QString("Generate"), buttonWidget);
+        generateBtn_->setEnabled(hasPath);
+        vLayoutBtn->addWidget(generateBtn_);
+
+        buildBtn_ = new QPushButton(QString("Build"), buttonWidget);
+        buildBtn_->setEnabled(hasPath);
+        vLayoutBtn->addWidget(buildBtn_);
+
+        // Clone
+        connect(cloneBtn_, &QPushButton::released, this,
+            [this, data] () {
+                int code = manager_->cloneModule(data);
+                if (code == 0) {
+                    cloned_ = true;
+                    configureBtn_->setVisible(true);
+                    configureBtn_->setEnabled(true);
+                }
+                manager_->updateModuleData();
+                cloneBtn_->setEnabled(false);
+            });
+        // Configure
+        connect(configureBtn_, &QPushButton::released, this,
+            [this, data] () {
+                int code = manager_->cmakeConfigure(data);
+                if (code == 0) {
+                    generateBtn_->setVisible(true);
+                    generateBtn_->setEnabled(true);
+                    // configureBtn_->setEnabled(false);
+                }
+            });
+        // Generate
+        connect(generateBtn_, &QPushButton::released, this,
+            [this, data] () {
+                int code = manager_->cmakeGenerate(data);
+                if (code == 0) {
+                    buildBtn_->setVisible(true);
+                    buildBtn_->setEnabled(true);
+                }
+            });
+        // Build
+        connect(buildBtn_, &QPushButton::released, this,
+            [this, data] () {
+                int code = manager_->build(data);
+                if (code == 0) {
+                    // TODO: load at runtime
+                }
+            });
+        // Load
 }
 
 }  // namespace inviwo
