@@ -29,6 +29,8 @@
 #pragma once
 
 #include <inviwo/marketplace/marketplacemoduledefine.h>
+#include <inviwo/marketplace/marketmodulewidgetqt.h>
+#include <inviwo/marketplace/marketmanager.h>
 #include <inviwo/qt/editor/inviwomainwindow.h>
 #include <modules/qtwidgets/inviwodockwidget.h>
 
@@ -55,6 +57,9 @@ public:
 protected:
 
 private:
+    MarketManager manager_;
+
+    std::vector<MarketModuleWidgetQt*> moduleWidgets_;
     std::vector<std::string> modules_;
     QTextEdit* description_;
     QToolButton* getModuleBtn_;
