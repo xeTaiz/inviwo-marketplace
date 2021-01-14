@@ -35,6 +35,7 @@
 #include <QColor>
 #include <QMainWindow>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QToolButton>
 #include <QPushButton>
@@ -62,62 +63,74 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
     {
         setFrameStyle(QFrame::Box | QFrame::Plain);
         setLineWidth(1);
+        setMaximumHeight(300);
         // Get image, description etc
 
+
+        auto grid = new QGridLayout();
+        this->setLayout(grid);
         // Horizontal Layout:    Image, Title, Description, Buttons
-        auto hLayout = new QHBoxLayout();
-        this->setLayout(hLayout);
         // Teaser Image
-        preview_ = new QImage();
-        preview_->fill(1);
-        auto previewWidget = new QLabel();
-        previewWidget->setPixmap(QPixmap::fromImage(*preview_));
-        hLayout->addWidget(previewWidget);
+        // preview_ = new QImage();
+        // preview_->fill(1);
+        // auto previewWidget = new QLabel();
+        // previewWidget->setPixmap(QPixmap::fromImage(*preview_));
+        // hLayout->addWidget(previewWidget);
 
         // Title and Description
-        auto textWidget = new QWidget();
-        auto vLayoutText = new QVBoxLayout();
-        hLayout->addWidget(textWidget);
-        textWidget->setLayout(vLayoutText);
         // Name
-        moduleName_ = new QLabel(QString::fromStdString(data.name), textWidget);
-        vLayoutText->addWidget(moduleName_);
-        // URL
-        auto repoUrl = new QLabel(QString::fromStdString(data.url), textWidget);
-        vLayoutText->addWidget(repoUrl);
-        // Description TODO
-        description_ = new QTextEdit(textWidget);
-        description_->setFrameShape(QFrame::NoFrame);
-        description_->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        vLayoutText->addWidget(description_);
+        moduleName_ = new QLabel(QString::fromStdString(data.name), this);
+        QFont font = moduleName_->font();
+        font.setPointSize(24);
+        moduleName_->setFont(font);
+        grid->addWidget(moduleName_, 0, 0, 1, 2);
 
+        // Description TODO
+        description_ = new QTextEdit(this);
+        description_
+            ->setText(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu felis cursus, "
+                "dignissim justo eu, convallis est. Proin commodo in enim nec sollicitudin. Morbi "
+                "auctor ultricies turpis, eget interdum massa posuere fermentum.");
+                description_->setFrameShape(QFrame::NoFrame);
+        description_->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        grid->addWidget(description_, 1, 0, 3, 2);
+
+        // URL
+        std::string urlRichText = "<a href=\"" + data.url + "\">Visit GitHub</a>";
+        auto repoUrl = new QLabel(QString::fromStdString(urlRichText), this);
+        repoUrl->setTextFormat(Qt::RichText);
+        repoUrl->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        repoUrl->setOpenExternalLinks(true);
+        repoUrl->setAlignment(Qt::AlignCenter);
+        grid->addWidget(repoUrl, 1, 2, 1, 1);
         // Buttons
         auto buttonWidget = new QWidget();
-        auto vLayoutBtn = new QVBoxLayout();
-        hLayout->addWidget(buttonWidget);
-        buttonWidget->setLayout(vLayoutBtn);
+        auto btnLayout = new QVBoxLayout();
+        grid->addWidget(buttonWidget, 2, 2, 3, 1);
+        buttonWidget->setLayout(btnLayout);
         // Install
-        installBtn_ = createButton("Download", ":/svgicons/save.svg", buttonWidget);
-        installBtn_->setObjectName("Download");
-        installBtn_->setToolTip("Download Module");
-        vLayoutBtn->addWidget(installBtn_);
+        // installBtn_ = createButton("Download", ":/svgicons/save.svg", buttonWidget);
+        // installBtn_->setObjectName("Download");
+        // installBtn_->setToolTip("Download Module");
+        // btnLayout->addWidget(installBtn_);
 
         bool hasPath = static_cast<bool>(data.path);
         cloneBtn_ = new QPushButton(QString("Clone"), buttonWidget);
         cloneBtn_->setEnabled(!hasPath);
-        vLayoutBtn->addWidget(cloneBtn_);
+        btnLayout->addWidget(cloneBtn_);
 
         configureBtn_ = new QPushButton(QString("Configure"), buttonWidget);
         configureBtn_->setEnabled(hasPath);
-        vLayoutBtn->addWidget(configureBtn_);
+        btnLayout->addWidget(configureBtn_);
 
         generateBtn_ = new QPushButton(QString("Generate"), buttonWidget);
         generateBtn_->setEnabled(hasPath);
-        vLayoutBtn->addWidget(generateBtn_);
+        btnLayout->addWidget(generateBtn_);
 
         buildBtn_ = new QPushButton(QString("Build"), buttonWidget);
         buildBtn_->setEnabled(hasPath);
-        vLayoutBtn->addWidget(buildBtn_);
+        btnLayout->addWidget(buildBtn_);
 
         // Clone
         connect(cloneBtn_, &QPushButton::released, this,
