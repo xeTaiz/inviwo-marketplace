@@ -31,6 +31,8 @@
 #include <inviwo/core/common/inviwoapplication.h>
 #include <inviwo/marketplace/processors/marketplace.h>
 #include <inviwo/marketplace/marketplacewidgetqt.h>
+#include <inviwo/marketplace/marketmanager.h>
+#include <inviwo/marketplace/marketplacesettings.h>
 
 #include <modules/qtwidgets/inviwoqtutils.h>
 #include <QMenu>
@@ -52,29 +54,9 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
     registerProcessor<Marketplace>();
     // registerProcessor<MarketplaceProcessor>();
 
-    // Properties
-    // registerProperty<MarketplaceProperty>();
-
-    // Readers and writes
-    // registerDataReader(std::make_unique<MarketplaceReader>());
-    // registerDataWriter(std::make_unique<MarketplaceWriter>());
-
-    // Data converters
-    // registerRepresentationConverter(std::make_unique<MarketplaceDisk2RAMConverter>());
-
-    // Ports
-    // registerPort<MarketplaceOutport>();
-    // registerPort<MarketplaceInport>();
-
-    // PropertyWidgets
-    // registerPropertyWidget<MarketplacePropertyWidget, MarketplaceProperty>("Default");
-
-    // Dialogs
-    // registerDialog<MarketplaceDialog>(MarketplaceOutport);
-
-    // Other things
-    // registerCapabilities(std::make_unique<MarketplaceCapabilities>());
-    // registerSettings(std::make_unique<MarketplaceSettings>());
+    std::shared_ptr<MarketManager> manager = std::make_shared<MarketManager>(app);
+    auto settings = std::make_unique<MarketplaceSettings>(app, manager);
+    registerSettings(std::move(settings));
     // registerMetaData(std::make_unique<MarketplaceMetaData>());
     // registerPortInspector("MarketplaceOutport", "path/workspace.inv");
     // registerProcessorWidget(std::string processorClassName, std::unique_ptr<ProcessorWidget> processorWidget);
@@ -99,10 +81,10 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
         {
             auto action = menu->addAction("Modules Marketplace");
             action->setCheckable(true);
-            win->connect(action, &QAction::triggered, [this, win, app]() {
+            win->connect(action, &QAction::triggered, [this, win, manager]() {
                 if (!editor_) {  // Setup Widget
                     editor_ =
-                        std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, app);
+                        std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, manager);
                     win->addDockWidget(Qt::BottomDockWidgetArea, editor_.get());
                     editor_->loadState();
                     editor_->setVisible(true);

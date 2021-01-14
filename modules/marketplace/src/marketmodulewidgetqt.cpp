@@ -64,13 +64,18 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         setFrameStyle(QFrame::Box | QFrame::Plain);
         setLineWidth(1);
         setMaximumHeight(300);
+        setMinimumHeight(150);
+        setMinimumWidth(500);
+        QSizePolicy policy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        setSizePolicy(policy);
+
         // Get image, description etc
 
 
         auto grid = new QGridLayout();
         this->setLayout(grid);
         // Horizontal Layout:    Image, Title, Description, Buttons
-        // Teaser Image
+        // Teaser Image TODO: teaser image from github?
         // preview_ = new QImage();
         // preview_->fill(1);
         // auto previewWidget = new QLabel();
@@ -85,7 +90,7 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         moduleName_->setFont(font);
         grid->addWidget(moduleName_, 0, 0, 1, 2);
 
-        // Description TODO
+        // Description TODO: query from github
         description_ = new QTextEdit(this);
         description_
             ->setText(
@@ -103,11 +108,11 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         repoUrl->setTextInteractionFlags(Qt::TextBrowserInteraction);
         repoUrl->setOpenExternalLinks(true);
         repoUrl->setAlignment(Qt::AlignCenter);
-        grid->addWidget(repoUrl, 1, 2, 1, 1);
+        grid->addWidget(repoUrl, 0, 2, 1, 1);
         // Buttons
         auto buttonWidget = new QWidget();
         auto btnLayout = new QVBoxLayout();
-        grid->addWidget(buttonWidget, 2, 2, 3, 1);
+        grid->addWidget(buttonWidget, 1, 2, 3, 1);
         buttonWidget->setLayout(btnLayout);
         // Install
         // installBtn_ = createButton("Download", ":/svgicons/save.svg", buttonWidget);
@@ -120,13 +125,14 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         cloneBtn_->setEnabled(!hasPath);
         btnLayout->addWidget(cloneBtn_);
 
-        configureBtn_ = new QPushButton(QString("Configure"), buttonWidget);
+        pullBtn_ = new QPushButton(QString("Pull"), buttonWidget);
+        pullBtn_->setEnabled(hasPath);
+        btnLayout->addWidget(pullBtn_);
+
+        configureBtn_ = new QPushButton(QString("CMake"), buttonWidget);
         configureBtn_->setEnabled(hasPath);
         btnLayout->addWidget(configureBtn_);
 
-        generateBtn_ = new QPushButton(QString("Generate"), buttonWidget);
-        generateBtn_->setEnabled(hasPath);
-        btnLayout->addWidget(generateBtn_);
 
         buildBtn_ = new QPushButton(QString("Build"), buttonWidget);
         buildBtn_->setEnabled(hasPath);
@@ -144,23 +150,22 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
                 manager_->updateModuleData();
                 cloneBtn_->setEnabled(false);
             });
-        // Configure
+        // Pull
+        connect(pullBtn_, &QPushButton::released, this,
+            [this, data] () {
+                int code = manager_->updateModule(data);
+                if (code == 0) {
+
+                }
+            });
+        // CMake
         connect(configureBtn_, &QPushButton::released, this,
             [this, data] () {
                 int code = manager_->cmakeConfigure(data);
                 if (code == 0) {
-                    generateBtn_->setVisible(true);
-                    generateBtn_->setEnabled(true);
-                    // configureBtn_->setEnabled(false);
-                }
-            });
-        // Generate
-        connect(generateBtn_, &QPushButton::released, this,
-            [this, data] () {
-                int code = manager_->cmakeGenerate(data);
-                if (code == 0) {
                     buildBtn_->setVisible(true);
                     buildBtn_->setEnabled(true);
+                    // configureBtn_->setEnabled(false);
                 }
             });
         // Build
