@@ -32,24 +32,32 @@
 #include <QColor>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <QGridLayout>
+#include <QScrollArea>
 #include <QLabel>
 #include <QToolButton>
 
 namespace inviwo {
 
-MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, const InviwoApplication* app)
+MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager)
     : InviwoDockWidget(utilqt::toQString(widgetName), parent, "ModulesMarketplace")
-    , manager_(std::make_shared<MarketManager>(app))
+    , manager_(manager)
     {
-    auto mainWidget = new QWidget(this);
+    auto mainWidget = new QScrollArea(this);
     this->setContents(mainWidget);
+    mainWidget->setWidgetResizable(true);
     resize(utilqt::emToPx(this, QSizeF(600, 200)));  // default size
     auto vLayout = new QVBoxLayout();
-    mainWidget->setLayout(vLayout);
+    vLayout->setAlignment(Qt::AlignTop);
+    vLayout->setSpacing(3);
 
-    manager_->updateModuleData();
+    mainWidget->setLayout(vLayout);
+    // Settings
+    // auto grid = new QGridLayout();
+
+
+    // Add all module widgets
     for (const auto data : manager_->getModules()) {
-        LogInfo("adding a module");
         auto w = new MarketModuleWidgetQt(data, mainWidget, manager_);
         moduleWidgets_.push_back(w);
         vLayout->addWidget(w);

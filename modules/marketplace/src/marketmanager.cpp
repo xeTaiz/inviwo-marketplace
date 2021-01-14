@@ -71,7 +71,7 @@ MarketManager::MarketManager(const InviwoApplication* app)
     , gitExecutablePath_("/usr/bin/git")
     , cmakeExecutablePath_("/usr/bin/cmake")
     , inviwoSourcePath_(app->getBasePath())
-    , inviwoBuildPath_("/home/dome/.inviwo/marketplace-build/")
+    , inviwoBuildPath_("/home/dome/inviwo-build-marketplace/")
     {
         LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
         LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
@@ -252,10 +252,14 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
     std::transform(module_name.begin(), module_name.end(), module_name.begin(), ::toupper);
 
     const std::string def = "-DIVW_MODULE_" + module_name + ":BOOL=1";
+    const std::string emp = "-DIVW_EXTERNAL_MODULES=" + externalModulesPath_;
 
     QStringList arguments;
-    arguments << "." << QString::fromStdString(def);
+    arguments << QString::fromStdString(inviwoSourcePath_)
+              << QString::fromStdString(def)
+              << QString::fromStdString(emp);
     process.setArguments(arguments);
+    std::cerr << "cmake " << inviwoSourcePath_ << " " << def << " " << emp << "\n";
     std::cerr << "configuring " << data.name << " with " << def << std::endl;
     process.start();
 

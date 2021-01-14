@@ -9,6 +9,7 @@ set(HEADER_FILES
     include/inviwo/marketplace/marketmodulewidgetqt.h
     include/inviwo/marketplace/marketplacemodule.h
     include/inviwo/marketplace/marketplacemoduledefine.h
+    include/inviwo/marketplace/marketplacesettings.h
     include/inviwo/marketplace/marketplacewidgetqt.h
     include/inviwo/marketplace/processors/marketplace.h
 )
@@ -18,6 +19,7 @@ set(SOURCE_FILES
     src/marketmanager.cpp
     src/marketmodulewidgetqt.cpp
     src/marketplacemodule.cpp
+    src/marketplacesettings.cpp
     src/marketplacewidgetqt.cpp
     src/processors/marketplace.cpp
 )

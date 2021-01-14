@@ -28,46 +28,29 @@
  *********************************************************************************/
 #pragma once
 
-#include <inviwo/core/common/inviwo.h>
 #include <inviwo/marketplace/marketplacemoduledefine.h>
-#include <inviwo/marketplace/marketmodulewidgetqt.h>
 #include <inviwo/marketplace/marketmanager.h>
-#include <inviwo/qt/editor/inviwomainwindow.h>
-#include <modules/qtwidgets/inviwodockwidget.h>
-
-#include <vector>
-#include <string>
-
-class QWidget;
-class QTextEdit;
-class QToolButton;
+#include <inviwo/core/util/settings/settings.h>
+#include <inviwo/core/properties/fileproperty.h>
+#include <inviwo/core/properties/directoryproperty.h>
 
 namespace inviwo {
 
 /**
- * \brief QT Widget for Modules Marketplace
- * Implements the actual Widget that is displayed
+ * \brief VERY_BRIEFLY_DESCRIBE_THE_CLASS
+ * DESCRIBE_THE_CLASS_FROM_A_DEVELOPER_PERSPECTIVE
  */
-class IVW_MODULE_MARKETPLACE_API MarketplaceWidgetQt : public InviwoDockWidget {
+class IVW_MODULE_MARKETPLACE_API MarketplaceSettings : public Settings {
 public:
-    MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager);
-    virtual ~MarketplaceWidgetQt() = default;
-    MarketplaceWidgetQt(const MarketplaceWidgetQt&) = delete;
-    MarketplaceWidgetQt& operator=(const MarketplaceWidgetQt&) = delete;
+    MarketplaceSettings(InviwoApplication* app, std::shared_ptr<MarketManager> manager);
+    virtual ~MarketplaceSettings() = default;
 
-protected:
+    FileProperty cmakeExec_;
+    FileProperty gitExec_;
+    DirectoryProperty buildDir_;
 
 private:
     std::shared_ptr<MarketManager> manager_;
-
-    std::vector<MarketModuleWidgetQt*> moduleWidgets_;
-    std::vector<std::string> modules_;
-    QTextEdit* description_;
-    QToolButton* getModuleBtn_;
-
-    void updateModuleList();
-    void pullModule(const std::string);
-    void buildModule(const std::string);
 };
 
 }  // namespace inviwo

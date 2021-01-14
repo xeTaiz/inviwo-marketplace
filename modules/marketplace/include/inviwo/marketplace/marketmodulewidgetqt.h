@@ -69,7 +69,7 @@ private:
 
     QPushButton* cloneBtn_;
     QPushButton* configureBtn_;
-    QPushButton* generateBtn_;
+    QPushButton* pullBtn_;
     QPushButton* buildBtn_;
 
     QToolButton* installBtn_;

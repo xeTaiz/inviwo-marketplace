@@ -26,48 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************************/
-#pragma once
 
-#include <inviwo/core/common/inviwo.h>
-#include <inviwo/marketplace/marketplacemoduledefine.h>
-#include <inviwo/marketplace/marketmodulewidgetqt.h>
-#include <inviwo/marketplace/marketmanager.h>
-#include <inviwo/qt/editor/inviwomainwindow.h>
-#include <modules/qtwidgets/inviwodockwidget.h>
-
-#include <vector>
-#include <string>
-
-class QWidget;
-class QTextEdit;
-class QToolButton;
+#include <inviwo/marketplace/marketplacesettings.h>
 
 namespace inviwo {
 
-/**
- * \brief QT Widget for Modules Marketplace
- * Implements the actual Widget that is displayed
- */
-class IVW_MODULE_MARKETPLACE_API MarketplaceWidgetQt : public InviwoDockWidget {
-public:
-    MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager);
-    virtual ~MarketplaceWidgetQt() = default;
-    MarketplaceWidgetQt(const MarketplaceWidgetQt&) = delete;
-    MarketplaceWidgetQt& operator=(const MarketplaceWidgetQt&) = delete;
+MarketplaceSettings::MarketplaceSettings(InviwoApplication* app, std::shared_ptr<MarketManager> manager)
+    : Settings("Marketplace Settings", app)
+    , manager_(manager)
+    , gitExec_("gitExec", "Git Executable")
+    , cmakeExec_("cmakeExec", "CMake Executable")
+    , buildDir_("buildDir", "Build Directory") {
 
-protected:
-
-private:
-    std::shared_ptr<MarketManager> manager_;
-
-    std::vector<MarketModuleWidgetQt*> moduleWidgets_;
-    std::vector<std::string> modules_;
-    QTextEdit* description_;
-    QToolButton* getModuleBtn_;
-
-    void updateModuleList();
-    void pullModule(const std::string);
-    void buildModule(const std::string);
-};
+    addProperties(gitExec_, cmakeExec_, buildDir_);
+}
 
 }  // namespace inviwo
