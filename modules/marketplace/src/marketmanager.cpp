@@ -67,7 +67,7 @@ std::optional<std::string> getModuleName(const std::filesystem::path& path) {
 MarketManager::MarketManager(const InviwoApplication* app)
     : app_(app)
     , repositoryUrl_("https://github.com/mstegmaier/inviwo-marketplace")
-    , externalModulesPath_(inviwo::filesystem::getInviwoUserSettingsPath() + "/marketplace/")
+    , externalModulesPath_(inviwo::filesystem::getInviwoUserSettingsPath() + "/marketplace")
     , gitExecutablePath_("/usr/bin/git")
     , cmakeExecutablePath_("/usr/bin/cmake")
     , inviwoSourcePath_(app->getBasePath())
