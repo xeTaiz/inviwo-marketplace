@@ -67,11 +67,11 @@ public:
 
     private:
         const InviwoApplication* app_;
-        std::string gitExecutablePath_;
-        std::string cmakeExecutablePath_;
-        std::string inviwoSourcePath_;
-        std::string inviwoBuildPath_;
-        std::string externalModulesPath_;
+        std::filesystem::path gitExecutablePath_;
+        std::filesystem::path cmakeExecutablePath_;
+        std::filesystem::path inviwoSourcePath_;
+        std::filesystem::path inviwoBuildPath_;
+        std::filesystem::path externalModulesPath_;
         std::string repositoryUrl_;
         std::vector<ModuleData> modules_;
     };

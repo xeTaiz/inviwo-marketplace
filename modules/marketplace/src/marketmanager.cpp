@@ -67,11 +67,11 @@ std::optional<std::string> getModuleName(const std::filesystem::path& path) {
 MarketManager::MarketManager(const InviwoApplication* app)
     : app_(app)
     , repositoryUrl_("https://github.com/mstegmaier/inviwo-marketplace")
-    , externalModulesPath_(inviwo::filesystem::getInviwoUserSettingsPath() + "/marketplace")
+    , externalModulesPath_(std::filesystem::path(inviwo::filesystem::getInviwoUserSettingsPath()) / "marketplace")
     , gitExecutablePath_("/usr/bin/git")
     , cmakeExecutablePath_("/usr/bin/cmake")
     , inviwoSourcePath_(app->getBasePath())
-    , inviwoBuildPath_("/home/dome/inviwo-build-marketplace/")
+    , inviwoBuildPath_("/home/dome/inviwo-build-marketplace")
     {
         LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
         LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
@@ -90,7 +90,7 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
                                                   const std::string& working_dir) {
     QProcess process;
 
-    process.setProgram(QString::fromStdString(gitExecutablePath_));
+    process.setProgram(QString::fromStdString(gitExecutablePath_.string()));
     process.setWorkingDirectory(QString::fromStdString(working_dir));
 
     QDir dir(process.workingDirectory());
@@ -125,10 +125,9 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
 }
 
 void MarketManager::updateModuleData() {
-    const std::filesystem::path modules_path (externalModulesPath_);
     // Get inviwo-marketplace if not in externalModulesPath_
-    if (!std::filesystem::exists(modules_path / "inviwo-marketplace")) {
-        const auto dir_name_ = gitClone(repositoryUrl_, modules_path.string());
+    if (!std::filesystem::exists(externalModulesPath_ / "inviwo-marketplace")) {
+        const auto dir_name_ = gitClone(repositoryUrl_, externalModulesPath_.string());
         if (!dir_name_) {
             util::log(IVW_CONTEXT, "Unable to clone " + repositoryUrl_, LogLevel::Warn,
                     LogAudience::User);
@@ -136,7 +135,7 @@ void MarketManager::updateModuleData() {
         }
     }
     // Read module URLs from inviwo-marketplace
-    const auto path = modules_path / "inviwo-marketplace" / "modules.txt";
+    const auto path = externalModulesPath_ / "inviwo-marketplace" / "modules.txt";
     std::ifstream file;
     file.open(path.string(), std::ios::in);
     if (!file.is_open()) {
@@ -158,7 +157,7 @@ void MarketManager::updateModuleData() {
             moduleName.erase(pos, 6);
         }
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
-        std::filesystem::path path (modules_path / moduleName);
+        std::filesystem::path path (externalModulesPath_ / moduleName);
         if (std::filesystem::exists(path)) {
             modules_.push_back({url, moduleName, path});
         } else {
@@ -172,15 +171,13 @@ const std::vector<ModuleData> MarketManager::getModules() const {
 }
 
 int MarketManager::cloneModule(const ModuleData& data) {
-    const std::filesystem::path modules_path (externalModulesPath_);
-
-    const auto dir_name_ = gitClone(data.url, modules_path.string());
+    const auto dir_name_ = gitClone(data.url, externalModulesPath_.string());
     if (!dir_name_) {
         util::log(IVW_CONTEXT, "Unable to clone " + data.url, LogLevel::Warn, LogAudience::User);
         return 1;
     }
     std::string dir_name = *dir_name_;
-    const auto module_name_ = getModuleName(modules_path / dir_name / "CMakeLists.txt");
+    const auto module_name_ = getModuleName(externalModulesPath_ / dir_name / "CMakeLists.txt");
     if (!module_name_) {
         util::log(IVW_CONTEXT, "Could not parse module name of module " + data.url, LogLevel::Warn,
                   LogAudience::User);
@@ -196,7 +193,7 @@ int MarketManager::cloneModule(const ModuleData& data) {
         util::log(IVW_CONTEXT,
                   "Directory " + dir_name + " is wrongly named! Renaming to " + module_name + "...",
                   LogLevel::Info, LogAudience::User);
-        std::filesystem::rename(modules_path / dir_name, modules_path / module_name);
+        std::filesystem::rename(externalModulesPath_ / dir_name, externalModulesPath_ / module_name);
         dir_name = module_name;
     }
 
@@ -213,7 +210,7 @@ int MarketManager::updateModule(const ModuleData& data) {
         return 1;
     }
 
-    process.setProgram(QString::fromStdString(gitExecutablePath_));
+    process.setProgram(QString::fromStdString(gitExecutablePath_.string()));
     process.setWorkingDirectory(QString::fromStdString(data.path->string()));
 
     QStringList arguments;
@@ -243,8 +240,8 @@ int MarketManager::updateModule(const ModuleData& data) {
 int MarketManager::cmakeConfigure(const ModuleData& data) {
     QProcess process;
 
-    process.setProgram(QString::fromStdString(cmakeExecutablePath_));
-    process.setWorkingDirectory(QString::fromStdString(inviwoBuildPath_));
+    process.setProgram(QString::fromStdString(cmakeExecutablePath_.string()));
+    process.setWorkingDirectory(QString::fromStdString(inviwoBuildPath_.string()));
 
     std::string module_name = data.name;
     std::cerr << "module_name = " << module_name << std::endl;
@@ -252,14 +249,14 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
     std::transform(module_name.begin(), module_name.end(), module_name.begin(), ::toupper);
 
     const std::string def = "-DIVW_MODULE_" + module_name + ":BOOL=1";
-    const std::string emp = "-DIVW_EXTERNAL_MODULES=" + externalModulesPath_;
+    const std::string emp = "-DIVW_EXTERNAL_MODULES=" + externalModulesPath_.string();
 
     QStringList arguments;
-    arguments << QString::fromStdString(inviwoSourcePath_)
+    arguments << QString::fromStdString(inviwoSourcePath_.string())
               << QString::fromStdString(def)
               << QString::fromStdString(emp);
     process.setArguments(arguments);
-    std::cerr << "cmake " << inviwoSourcePath_ << " " << def << " " << emp << "\n";
+    std::cerr << "cmake " << inviwoSourcePath_.string() << " " << def << " " << emp << "\n";
     std::cerr << "configuring " << data.name << " with " << def << std::endl;
     process.start();
 
