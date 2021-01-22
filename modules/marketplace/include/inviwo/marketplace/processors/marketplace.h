@@ -38,6 +38,8 @@
 #include <inviwo/core/properties/buttonproperty.h>
 #include <inviwo/core/properties/compositeproperty.h>
 
+#include <optional>
+
 namespace inviwo {
 
 /** \docpage{org.inviwo.Marketplace, Marketplace}
