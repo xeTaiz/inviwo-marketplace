@@ -28,6 +28,7 @@
  *********************************************************************************/
 
 #include <inviwo/marketplace/marketmanager.h>
+#include <inviwo/marketplace/marketplacesettings.h>
 #include <inviwo/core/util/filesystem.h>
 
 #include <filesystem>
@@ -64,17 +65,15 @@ std::optional<std::string> getModuleName(const std::filesystem::path& path) {
     return std::nullopt;
 }
 
-MarketManager::MarketManager(const InviwoApplication* app)
+MarketManager::MarketManager(InviwoApplication* app)
     : app_(app)
     , repositoryUrl_("https://github.com/mstegmaier/inviwo-marketplace")
     , externalModulesPath_(std::filesystem::path(inviwo::filesystem::getInviwoUserSettingsPath()) / "marketplace")
-    , gitExecutablePath_("/usr/bin/git")
-    , cmakeExecutablePath_("/usr/bin/cmake")
     , inviwoSourcePath_(app->getBasePath())
-    , inviwoBuildPath_("/home/dome/inviwo-build-marketplace")
     {
         LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
         LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
+
         updateModuleData();
         for (auto md : modules_) {
             if (md.path){
@@ -90,7 +89,8 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
                                                   const std::string& working_dir) {
     QProcess process;
 
-    process.setProgram(QString::fromStdString(gitExecutablePath_.string()));
+    auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
+    process.setProgram(QString::fromStdString(gitExec));
     process.setWorkingDirectory(QString::fromStdString(working_dir));
 
     QDir dir(process.workingDirectory());
@@ -209,8 +209,8 @@ int MarketManager::updateModule(const ModuleData& data) {
         LogInfo("ModuleData does not have a path");
         return 1;
     }
-
-    process.setProgram(QString::fromStdString(gitExecutablePath_.string()));
+    auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
+    process.setProgram(QString::fromStdString(gitExec));
     process.setWorkingDirectory(QString::fromStdString(data.path->string()));
 
     QStringList arguments;
@@ -240,8 +240,10 @@ int MarketManager::updateModule(const ModuleData& data) {
 int MarketManager::cmakeConfigure(const ModuleData& data) {
     QProcess process;
 
-    process.setProgram(QString::fromStdString(cmakeExecutablePath_.string()));
-    process.setWorkingDirectory(QString::fromStdString(inviwoBuildPath_.string()));
+    auto cmakeExec = app_->getSettingsByType<MarketplaceSettings>()->cmakeExec_.get();
+    auto buildDir = app_->getSettingsByType<MarketplaceSettings>()->buildDir_.get();
+    process.setProgram(QString::fromStdString(cmakeExec));
+    process.setWorkingDirectory(QString::fromStdString(buildDir));
 
     std::string module_name = data.name;
     std::cerr << "module_name = " << module_name << std::endl;
