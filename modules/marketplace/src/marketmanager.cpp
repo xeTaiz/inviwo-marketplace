@@ -171,7 +171,7 @@ const std::vector<ModuleData> MarketManager::getModules() const {
 }
 
 int MarketManager::cloneModule(const ModuleData& data) {
-    const auto dir_name_ = gitClone(data.url, externalModulesPath_.string());
+    const auto dir_name_ = gitClone(data.url, externalModulesPath_.make_preferred().string());
     if (!dir_name_) {
         util::log(IVW_CONTEXT, "Unable to clone " + data.url, LogLevel::Warn, LogAudience::User);
         return 1;
