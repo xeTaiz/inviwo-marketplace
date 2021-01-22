@@ -39,6 +39,7 @@
 
 namespace inviwo {
 
+
 struct ModuleData {
     std::string url;
     std::string name;
@@ -51,7 +52,7 @@ struct ModuleData {
  */
 class IVW_MODULE_MARKETPLACE_API MarketManager {
 public:
-    MarketManager(const InviwoApplication*);
+    MarketManager(InviwoApplication*);
     virtual ~MarketManager() = default;
 
     std::optional<std::string> gitClone(const std::string&, const std::string&);
@@ -66,11 +67,8 @@ public:
     const std::vector<ModuleData> getModules() const;
 
     private:
-        const InviwoApplication* app_;
-        std::filesystem::path gitExecutablePath_;
-        std::filesystem::path cmakeExecutablePath_;
+        InviwoApplication* app_;
         std::filesystem::path inviwoSourcePath_;
-        std::filesystem::path inviwoBuildPath_;
         std::filesystem::path externalModulesPath_;
         std::string repositoryUrl_;
         std::vector<ModuleData> modules_;
