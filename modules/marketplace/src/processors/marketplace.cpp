@@ -73,7 +73,7 @@ std::optional<std::string> get_module_name(const std::filesystem::path& path) {
 
 std::optional<std::string> Marketplace::git_clone(const std::string& url, const std::string& working_dir) {
 	QProcess process;
-	
+
 	process.setProgram(QString::fromStdString(gitExecutablePath_.get()));
 	process.setWorkingDirectory(QString::fromStdString(working_dir));
 
@@ -93,7 +93,7 @@ std::optional<std::string> Marketplace::git_clone(const std::string& url, const 
 	std::cerr << "terminated with exit code " << process.exitCode() << std::endl;
 	std::cerr << "stdout:\n" << process.readAllStandardOutput().constData() << std::endl;
 	std::cerr << "stderr:\n" << process.readAllStandardError().constData() << std::endl;
-	
+
 	std::vector<std::string> new_directories;
 	for(const QFileInfo& info : dir.entryInfoList(QDir::Dirs)) {
 		const std::string name = info.fileName().toLocal8Bit().constData();
@@ -151,7 +151,9 @@ Marketplace::Marketplace()
 			}
 
 			// remove dir
-			std::filesystem::remove_all(modules_path / dir_name);
+            QDir dir(QString::fromStdString((modules_path / dir_name).string()));
+            dir.removeRecursively();
+            //std::filesystem::remove_all(modules_path / dir_name);
 
 			for(size_t i = 0; i < num_modules; i++)
 				this->removeProperty("module"+std::to_string(i));
@@ -213,7 +215,7 @@ Marketplace::Marketplace()
 									std::transform(module_name.begin(), module_name.end(), module_name.begin(), ::toupper);
 
 									const std::string def = "-DIVW_MODULE_" + module_name + ":BOOL=1";
-									
+
 									QStringList arguments;
 									arguments << "."
 											<< QString::fromStdString(def);
@@ -235,7 +237,7 @@ Marketplace::Marketplace()
 
 							process.setProgram(QString::fromStdString(gitExecutablePath_.get()));
 							process.setWorkingDirectory(QString::fromStdString(data->namepath->second.string()));
-							
+
 							QStringList arguments;
 							arguments << "checkout" << ".";
 							process.setArguments(arguments);
