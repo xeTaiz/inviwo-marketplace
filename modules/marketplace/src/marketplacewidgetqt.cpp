@@ -36,6 +36,7 @@
 #include <QScrollArea>
 #include <QLabel>
 #include <QToolButton>
+#include <QPushButton>
 
 namespace inviwo {
 
@@ -52,16 +53,36 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     vLayout->setSpacing(3);
 
     mainWidget->setLayout(vLayout);
+
+    auto titleWidget = new QWidget(mainWidget);
+    auto hLayout = new QHBoxLayout();
+    titleWidget->setLayout(hLayout);
+
+    auto title = new QLabel(QString("Inviwo Marketplace"), titleWidget);
+    auto refresh = new QPushButton(QString("Refresh"), titleWidget);
+    connect(refresh, &QPushButton::released, this,
+        [this, vLayout, mainWidget] () {
+            manager_->updateModuleData();
+
+            for (auto w : moduleWidgets_) {
+                vLayout->removeWidget(w);
+            }
+            moduleWidgets_.clear();
+
+            // Add all module widgets
+            for (const auto data : manager_->getModules()) {
+                auto w = new MarketModuleWidgetQt(data, mainWidget, manager_);
+                moduleWidgets_.push_back(w);
+                vLayout->addWidget(w);
+            }
+        });
+    hLayout->addWidget(title);
+    hLayout->addWidget(refresh);
     // Settings
     // auto grid = new QGridLayout();
 
 
-    // Add all module widgets
-    for (const auto data : manager_->getModules()) {
-        auto w = new MarketModuleWidgetQt(data, mainWidget, manager_);
-        moduleWidgets_.push_back(w);
-        vLayout->addWidget(w);
-    }
+
 
 }
 

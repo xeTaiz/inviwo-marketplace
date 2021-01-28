@@ -54,8 +54,8 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
     registerProcessor<Marketplace>();
     // registerProcessor<MarketplaceProcessor>();
 
-    std::shared_ptr<MarketManager> manager = std::make_shared<MarketManager>(app);
-    auto settings = std::make_unique<MarketplaceSettings>(app, manager);
+    manager_ = std::make_shared<MarketManager>(app);
+    auto settings = std::make_unique<MarketplaceSettings>(app, manager_);
     registerSettings(std::move(settings));
     // registerMetaData(std::make_unique<MarketplaceMetaData>());
     // registerPortInspector("MarketplaceOutport", "path/workspace.inv");
@@ -81,10 +81,10 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
         {
             auto action = menu->addAction("Modules Marketplace");
             action->setCheckable(true);
-            win->connect(action, &QAction::triggered, [this, win, manager]() {
+            win->connect(action, &QAction::triggered, [this, win]() {
                 if (!editor_) {  // Setup Widget
                     editor_ =
-                        std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, manager);
+                        std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, manager_);
                     win->addDockWidget(Qt::BottomDockWidgetArea, editor_.get());
                     editor_->loadState();
                     editor_->setVisible(true);
