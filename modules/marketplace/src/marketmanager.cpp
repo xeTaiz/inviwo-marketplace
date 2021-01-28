@@ -48,7 +48,7 @@ std::optional<std::string> getModuleName(const std::filesystem::path& path) {
     std::ifstream file;
     file.open(path.string(), std::ios::in);
     if (!file.is_open()) {
-        std::cerr << "Could not open " << path.string() << "\n";
+        // LogInfo("Could not open the module file");
         return std::nullopt;
     }
     std::string tmp;
@@ -73,16 +73,6 @@ MarketManager::MarketManager(InviwoApplication* app)
     {
         LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
         LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
-
-        // updateModuleData();
-        // for (auto md : modules_) {
-        //     if (md.path){
-        //         std::cout << md.name << "  " << md.url << "\n" << md.path->string() << std::endl;
-        //     } else {
-        //         std::cout << md.name << "  " << md.url << "\n"
-        //                   << "Not on disk." << std::endl;
-        //     }
-        // }
 }
 
 std::optional<std::string> MarketManager::gitClone(const std::string& url,
@@ -225,8 +215,13 @@ int MarketManager::updateModule(const ModuleData& data) {
     process.setArguments(arguments);
     process.start();
     process.waitForFinished();
-    util::log(IVW_CONTEXT, "Checkout with exit code " + std::to_string(process.exitCode()),
-            LogLevel::Info, LogAudience::User);
+    if (process.exitCode() == 0) {
+        LogInfo("Checkout Module was successful.");
+    } else {
+        LogInfo("Checkout terminted with exid code " + std::to_string(process.exitCode()));
+        LogInfo("stdout:\n" + process.readAllStandardOutput().toStdString());
+        LogInfo("stderr:\n" + process.readAllStandardError().toStdString());
+    }
 
     arguments.clear();
     arguments << "rebase";
@@ -234,12 +229,14 @@ int MarketManager::updateModule(const ModuleData& data) {
     process.start();
 
     process.waitForFinished();
-    std::cerr << "terminated with exit code " << process.exitCode() << std::endl;
-    std::cerr << "stdout:\n" << process.readAllStandardOutput().constData() << std::endl;
-    std::cerr << "stderr:\n" << process.readAllStandardError().constData() << std::endl;
+    if (process.exitCode() == 0) {
+        LogInfo("Rebase Module was successful.");
+    } else {
+        LogInfo("Rebase terminted with exid code " + std::to_string(process.exitCode()));
+        LogInfo("stdout:\n" + process.readAllStandardOutput().toStdString());
+        LogInfo("stderr:\n" + process.readAllStandardError().toStdString());
+    }
 
-    util::log(IVW_CONTEXT, "Finished pull with exit code " + std::to_string(process.exitCode()),
-            LogLevel::Info, LogAudience::User);
     return process.exitCode();
 }
 
@@ -247,12 +244,16 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
     QProcess process;
 
     auto cmakeExec = app_->getSettingsByType<MarketplaceSettings>()->cmakeExec_.get();
+    if (!std::filesystem::exists(std::filesystem::path(cmakeExec)) || cmakeExec.empty()){
+        LogInfo("Cmake Executable: " + cmakeExec);
+        LogInfo("Cmake Executable is not set. Go to View > Settings > Marketplace and set it");
+        return 1;
+    }
     auto buildDir = app_->getSettingsByType<MarketplaceSettings>()->buildDir_.get();
     process.setProgram(QString::fromStdString(cmakeExec));
     process.setWorkingDirectory(QString::fromStdString(buildDir));
 
     std::string module_name = data.name;
-    std::cerr << "module_name = " << module_name << std::endl;
 
     std::transform(module_name.begin(), module_name.end(), module_name.begin(), ::toupper);
 
@@ -264,17 +265,18 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
               << QString::fromStdString(def)
               << QString::fromStdString(emp);
     process.setArguments(arguments);
-    std::cerr << "cmake " << inviwoSourcePath_.string() << " " << def << " " << emp << "\n";
-    std::cerr << "configuring " << data.name << " with " << def << std::endl;
+    LogInfo("cmake " + inviwoSourcePath_.string() + " " + def + " " + emp);
+    LogInfo("Configuring " + data.name + " with " + def);
     process.start();
 
     process.waitForFinished();
-    std::cerr << "terminated with exit code " << process.exitCode() << std::endl;
-    std::cerr << "stdout:\n" << process.readAllStandardOutput().constData() << std::endl;
-    std::cerr << "stderr:\n" << process.readAllStandardError().constData() << std::endl;
-    util::log(IVW_CONTEXT,
-              "Finished configure with exit code " + std::to_string(process.exitCode()),
-              LogLevel::Info, LogAudience::User);
+    if (process.exitCode() == 0) {
+        LogInfo("CMake Configure was successful.");
+    } else {
+        LogInfo("CMake Configure terminted with exid code " + std::to_string(process.exitCode()));
+        LogInfo("stdout:\n" + process.readAllStandardOutput().toStdString());
+        LogInfo("stderr:\n" + process.readAllStandardError().toStdString());
+    }
 
     return process.exitCode();
 }
