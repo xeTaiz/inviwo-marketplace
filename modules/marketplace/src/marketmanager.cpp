@@ -88,9 +88,9 @@ MarketManager::MarketManager(InviwoApplication* app)
 std::optional<std::string> MarketManager::gitClone(const std::string& url,
                                                   const std::string& working_dir) {
     auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
-    LogInfo("Git Exec: " + gitExec);
     if (!std::filesystem::exists(std::filesystem::path(gitExec)) || gitExec.empty()) {
-        LogError("Set Git Executable Path in Inviwo View > Settings > Marketplace.");
+        LogInfo("Git Exec: " + gitExec);
+        LogInfo("Set Git Executable Path in Inviwo View > Settings > Marketplace.");
         return std::nullopt;
     }
     QProcess process;
@@ -106,19 +106,24 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
     QStringList arguments;
     arguments << "clone" << QString::fromStdString(url);
     process.setArguments(arguments);
-    std::cerr << "cloning " << url << " in " << working_dir << std::endl;
+    LogInfo("Cloning " + url + " to " + working_dir);
     process.start();
 
     process.waitForFinished();
-    std::cerr << "terminated with exit code " << process.exitCode() << std::endl;
-    std::cerr << "stdout:\n" << process.readAllStandardOutput().constData() << std::endl;
-    std::cerr << "stderr:\n" << process.readAllStandardError().constData() << std::endl;
+
+    if (process.exitCode() == 0) {
+        LogInfo("Cloning was successful.");
+    } else {
+        LogInfo("git clone terminate with exit code " + std::to_string(process.exitCode()) + "\n");
+        LogInfo("stdout:\n" + process.readAllStandardOutput().toStdString());
+        LogInfo("stderr:\n" + process.readAllStandardError().toStdString());
+    }
 
     std::vector<std::string> new_directories;
     for (const QFileInfo& info : dir.entryInfoList(QDir::Dirs)) {
-        const std::string name = info.fileName().toLocal8Bit().constData();
+        const std::string name = info.fileName().toLocal8Bit().toStdString();
         if (old_directories.count(name) == 0) {
-            std::cerr << "found new \"" << name << "\" in " << working_dir << std::endl;
+            LogInfo("Found new module " + name + " in " + working_dir);
             new_directories.emplace_back(name);
         }
     }
@@ -134,8 +139,7 @@ void MarketManager::updateModuleData() {
     if (!std::filesystem::exists(externalModulesPath_ / "inviwo-marketplace")) {
         const auto dir_name_ = gitClone(repositoryUrl_, externalModulesPath_.string());
         if (!dir_name_) {
-            util::log(IVW_CONTEXT, "Unable to clone " + repositoryUrl_, LogLevel::Warn,
-                    LogAudience::User);
+            LogInfo("Unable to clone " + repositoryUrl_);
             return;
         }
     }
@@ -144,7 +148,7 @@ void MarketManager::updateModuleData() {
     std::ifstream file;
     file.open(path.string(), std::ios::in);
     if (!file.is_open()) {
-        util::log(IVW_CONTEXT, "Could not open " + path.string(), LogLevel::Warn, LogAudience::User);
+        LogInfo("Could not open " + path.string());
         return;
     }
     std::string tmp;
@@ -178,14 +182,13 @@ const std::vector<ModuleData> MarketManager::getModules() const {
 int MarketManager::cloneModule(const ModuleData& data) {
     const auto dir_name_ = gitClone(data.url, externalModulesPath_.make_preferred().string());
     if (!dir_name_) {
-        util::log(IVW_CONTEXT, "Unable to clone " + data.url, LogLevel::Warn, LogAudience::User);
+        LogInfo("Unable to clone " + data.url);
         return 1;
     }
     std::string dir_name = *dir_name_;
     const auto module_name_ = getModuleName(externalModulesPath_ / dir_name / "CMakeLists.txt");
     if (!module_name_) {
-        util::log(IVW_CONTEXT, "Could not parse module name of module " + data.url, LogLevel::Warn,
-                  LogAudience::User);
+        LogInfo("Could not parse module name of " + dir_name + "  (" + data.url + ")");
         return 1;
     }
     const auto& module_name = *module_name_;
@@ -195,9 +198,7 @@ int MarketManager::cloneModule(const ModuleData& data) {
         name_ok &= (tolower(dir_name[i]) != module_name[i]);
 
     if (!name_ok) {
-        util::log(IVW_CONTEXT,
-                  "Directory " + dir_name + " is wrongly named! Renaming to " + module_name + "...",
-                  LogLevel::Info, LogAudience::User);
+        LogInfo("Directory " + dir_name + " is wrongly named! Renaming to " + module_name);
         std::filesystem::rename(externalModulesPath_ / dir_name, externalModulesPath_ / module_name);
         dir_name = module_name;
     }
