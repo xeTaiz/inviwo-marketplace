@@ -37,6 +37,8 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QPushButton>
+#include <QFrame>
+#include <QFont>
 
 namespace inviwo {
 
@@ -54,11 +56,18 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
 
     mainWidget->setLayout(vLayout);
 
-    auto titleWidget = new QWidget(mainWidget);
+    auto titleWidget = new QFrame(mainWidget);
     auto hLayout = new QHBoxLayout();
+    titleWidget->setMinimumHeight(150);
+    titleWidget->setMinimumWidth(500);
+    titleWidget->setFrameStyle(QFrame::Box | QFrame::Plain);
     titleWidget->setLayout(hLayout);
+    vLayout->addWidget(titleWidget);
 
     auto title = new QLabel(QString("Inviwo Marketplace"), titleWidget);
+    QFont font = title->font();
+    font.setPointSize(30);
+    title->setFont(font);
     auto refresh = new QPushButton(QString("Refresh"), titleWidget);
     connect(refresh, &QPushButton::released, this,
         [this, vLayout, mainWidget] () {
