@@ -133,11 +133,6 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
         configureBtn_->setEnabled(hasPath);
         btnLayout->addWidget(configureBtn_);
 
-
-        buildBtn_ = new QPushButton(QString("Build"), buttonWidget);
-        buildBtn_->setEnabled(hasPath);
-        btnLayout->addWidget(buildBtn_);
-
         // Clone
         connect(cloneBtn_, &QPushButton::released, this,
             [this, data] () {
@@ -163,17 +158,7 @@ MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* pare
             [this, data] () {
                 int code = manager_->cmakeConfigure(data);
                 if (code == 0) {
-                    buildBtn_->setVisible(true);
-                    buildBtn_->setEnabled(true);
-                    // configureBtn_->setEnabled(false);
-                }
-            });
-        // Build
-        connect(buildBtn_, &QPushButton::released, this,
-            [this, data] () {
-                int code = manager_->build(data);
-                if (code == 0) {
-                    // TODO: load at runtime
+
                 }
             });
         // Load

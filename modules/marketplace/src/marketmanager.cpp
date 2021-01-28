@@ -281,11 +281,4 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
     return process.exitCode();
 }
 
-int MarketManager::cmakeGenerate(const ModuleData& data) {
-    return 0;
-}
-
-int MarketManager::build(const ModuleData& data) {
-    return 0;
-}
 }  // namespace inviwo
