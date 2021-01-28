@@ -89,7 +89,7 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
                                                   const std::string& working_dir) {
     auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
     LogInfo("Git Exec: " + gitExec);
-    if (!std::filesystem::exists(std::filesystem::path(gitExec))) {
+    if (!std::filesystem::exists(std::filesystem::path(gitExec)) || gitExec.empty()) {
         LogError("Set Git Executable Path in Inviwo View > Settings > Marketplace.");
         return std::nullopt;
     }
