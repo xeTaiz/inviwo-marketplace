@@ -33,6 +33,7 @@
 #include <inviwo/marketplace/marketplacewidgetqt.h>
 
 class QMenu;
+class MarketManager;
 
 namespace inviwo {
 
@@ -43,6 +44,7 @@ public:
 private:
     std::unique_ptr<QMenu> menu_;
     std::unique_ptr<MarketplaceWidgetQt> editor_;
+    std::shared_ptr<MarketManager> manager_;
 };
 
 }  // namespace inviwo

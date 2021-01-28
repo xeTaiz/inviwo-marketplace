@@ -74,22 +74,27 @@ MarketManager::MarketManager(InviwoApplication* app)
         LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
         LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
 
-        updateModuleData();
-        for (auto md : modules_) {
-            if (md.path){
-                std::cout << md.name << "  " << md.url << "\n" << md.path->string() << std::endl;
-            } else {
-                std::cout << md.name << "  " << md.url << "\n"
-                          << "Not on disk." << std::endl;
-            }
-        }
+        // updateModuleData();
+        // for (auto md : modules_) {
+        //     if (md.path){
+        //         std::cout << md.name << "  " << md.url << "\n" << md.path->string() << std::endl;
+        //     } else {
+        //         std::cout << md.name << "  " << md.url << "\n"
+        //                   << "Not on disk." << std::endl;
+        //     }
+        // }
 }
 
 std::optional<std::string> MarketManager::gitClone(const std::string& url,
                                                   const std::string& working_dir) {
+    auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
+    LogInfo("Git Exec: " + gitExec);
+    if (!std::filesystem::exists(std::filesystem::path(gitExec))) {
+        LogError("Set Git Executable Path in Inviwo View > Settings > Marketplace.");
+        return std::nullopt;
+    }
     QProcess process;
 
-    auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
     process.setProgram(QString::fromStdString(gitExec));
     process.setWorkingDirectory(QString::fromStdString(working_dir));
 

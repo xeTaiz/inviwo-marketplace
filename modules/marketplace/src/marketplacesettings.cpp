@@ -34,9 +34,9 @@ namespace inviwo {
 MarketplaceSettings::MarketplaceSettings(InviwoApplication* app, std::shared_ptr<MarketManager> manager)
     : Settings("Marketplace Settings", app)
     , manager_(manager)
-    , gitExec_("gitExec", "Git Executable")
-    , cmakeExec_("cmakeExec", "CMake Executable")
-    , buildDir_("buildDir", "Build Directory") {
+    , gitExec_("gitExec", "Git Executable", "")
+    , cmakeExec_("cmakeExec", "CMake Executable", "")
+    , buildDir_("buildDir", "Build Directory", "") {
 
     addProperties(gitExec_, cmakeExec_, buildDir_);
 }
