@@ -73,6 +73,9 @@ MarketManager::MarketManager(InviwoApplication* app)
     {
         LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
         LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
+        if (!std::filesystem::exists(externalModulesPath_)){
+            std::filesystem::create_directory(externalModulesPath_);
+        }
 }
 
 std::optional<std::string> MarketManager::gitClone(const std::string& url,
