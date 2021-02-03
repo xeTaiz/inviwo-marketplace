@@ -44,6 +44,7 @@
 #include <vector>
 #include <memory>
 #include <warn/pop>
+#include <string>
 
 namespace inviwo {
 
@@ -99,6 +100,8 @@ public:
      * @see InviwoModuleLibraryObserver
      */
     void unregisterModules();
+
+    void tryRegisterModule(const std::string&);
 
     const std::vector<std::unique_ptr<InviwoModule>>& getModules() const;
     const std::vector<std::unique_ptr<InviwoModuleFactoryObject>>& getModuleFactoryObjects() const;
