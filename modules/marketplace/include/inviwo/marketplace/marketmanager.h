@@ -61,6 +61,7 @@ public:
     int cloneModule(const ModuleData&);
     int updateModule(const ModuleData&);
     int cmakeConfigure(const ModuleData& data);
+    void tryLoadModule();
 
     const std::vector<ModuleData> getModules() const;
 

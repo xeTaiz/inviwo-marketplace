@@ -101,6 +101,10 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
     process.setArguments(arguments);
     LogInfo("Cloning " + url + " to " + working_dir);
     process.start();
+    if (!process.waitForStarted()){
+        LogInfo("git clone could not start correctly. Did you specify the Git executable in View > Settings > Marketplace?");
+        return std::nullopt;
+    }
 
     process.waitForFinished();
 
@@ -284,4 +288,8 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
     return process.exitCode();
 }
 
+void MarketManager::tryLoadModule() {
+    app_->getModuleManager().tryRegisterModule(
+        "/home/dome/.inviwo/marketplace/libinviwo-module-markettestmodule.so");
+}
 }  // namespace inviwo
