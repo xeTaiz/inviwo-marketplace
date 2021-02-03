@@ -71,7 +71,6 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     auto refresh = new QPushButton(QString("Refresh"), titleWidget);
     connect(refresh, &QPushButton::released, this,
         [this, vLayout, mainWidget] () {
-            LogError("test");
             manager_->updateModuleData();
 
             for (auto w : moduleWidgets_) {
@@ -88,6 +87,12 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
         });
     hLayout->addWidget(title);
     hLayout->addWidget(refresh);
+
+    auto loadTest = new QPushButton(QString("Load Test Module"), titleWidget);
+    connect(loadTest, &QPushButton::released, this, [this]() {
+        manager_->tryLoadModule();
+    });
+    hLayout->addWidget(loadTest);
     // Settings
     // auto grid = new QGridLayout();
 
