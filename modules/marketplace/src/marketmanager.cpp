@@ -276,6 +276,13 @@ int MarketManager::cmakeConfigure(const ModuleData& data) {
     LogInfo("Configuring " + data.name + " with " + def);
     process.start();
 
+    if (!process.waitForStarted()) {
+        LogInfo(
+            "cmake configure/generate could not start correctly. Did you specify the cmake executable in View > "
+            "Settings > Marketplace?");
+        return 1;
+    }
+
     process.waitForFinished();
     if (process.exitCode() == 0) {
         LogInfo("CMake Configure was successful.");
