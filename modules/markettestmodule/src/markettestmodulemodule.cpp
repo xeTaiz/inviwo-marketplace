@@ -28,6 +28,7 @@
  *********************************************************************************/
 
 #include <inviwo/markettestmodule/markettestmodulemodule.h>
+#include <inviwo/markettestmodule/processors/testprocessor.h>
 
 namespace inviwo {
 
@@ -40,6 +41,7 @@ MarketTestModuleModule::MarketTestModuleModule(InviwoApplication* app) : InviwoM
 
     // Processors
     // registerProcessor<MarketTestModuleProcessor>();
+    registerProcessor<TestProcessor>();
 
     // Properties
     // registerProperty<MarketTestModuleProperty>();

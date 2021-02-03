@@ -3,11 +3,13 @@ ivw_module(MarketTestModule)
 set(HEADER_FILES
     include/inviwo/markettestmodule/markettestmodulemodule.h
     include/inviwo/markettestmodule/markettestmodulemoduledefine.h
+    include/inviwo/markettestmodule/processors/testprocessor.h
 )
 ivw_group("Header Files" ${HEADER_FILES})
 
 set(SOURCE_FILES
     src/markettestmodulemodule.cpp
+    src/processors/testprocessor.cpp
 )
 ivw_group("Source Files" ${SOURCE_FILES})
 
