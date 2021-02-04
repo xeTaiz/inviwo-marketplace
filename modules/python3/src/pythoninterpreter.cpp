@@ -83,7 +83,21 @@ PythonInterpreter::PythonInterpreter() : embedded_{false}, isInit_(false) {
         try {
             py::exec(R"(
 import sys
-import inviwopy
+import distutils.sysconfig
+
+def formatError(e):
+    paths = sys.path
+    pathlist = '\n'.join(paths)
+    config = '\n'.join(f"{k:15}{v}" for k,v in distutils.sysconfig.get_config_vars().items())
+    return f"{e} \nname: {e.name}\npaths:\n{pathlist}\nconfig: {config}"    
+
+try:
+    import inviwopy
+except ModuleNotFoundError as e:
+    raise ModuleNotFoundError(formatError(e))
+except ImportError as e:
+    raise ImportError(formatError(e))
+
 
 class OutputRedirector:
     def __init__(self, type):

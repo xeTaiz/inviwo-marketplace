@@ -48,7 +48,7 @@
 
 class QDropEvent;
 class QDragEnterEvent;
-class QTabWidget;
+class QStackedWidget;
 
 namespace inviwo {
 
@@ -181,6 +181,8 @@ private:
     void saveWorkspace(QString workspaceFileName);
     void appendWorkspace(const std::string& workspaceFileName);
 
+    std::optional<QString> askForWorkspaceToOpen();
+
     void addActions();
 
     void closeEvent(QCloseEvent* event) override;
@@ -208,7 +210,7 @@ private:
     QMenu* testMenu_ = nullptr;
     std::shared_ptr<ConsoleWidget> consoleWidget_;
     std::unique_ptr<NetworkEditor> networkEditor_;
-    QTabWidget* centralWidget_;
+    QStackedWidget* centralWidget_;
     NetworkEditorView* networkEditorView_;
 
     SettingsWidget* settings_;
@@ -217,6 +219,7 @@ private:
     PropertyListWidget* propertyListWidget_;
     HelpWidget* helpWidget_;
     std::unique_ptr<WelcomeWidget> welcomeWidget_;
+    std::vector<QDockWidget*> welcomeHidden_;
     AnnotationsWidget* annotationsWidget_ = nullptr;
     InviwoAboutWindow* inviwoAboutWindow_ = nullptr;
 
