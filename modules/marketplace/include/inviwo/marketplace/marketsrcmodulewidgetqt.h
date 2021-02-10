@@ -51,12 +51,12 @@ namespace inviwo {
  * \brief QT Widget for Modules Marketplace
  * Implements the items representing one module
  */
-class IVW_MODULE_MARKETPLACE_API MarketModuleWidgetQt : public QFrame {
+class IVW_MODULE_MARKETPLACE_API MarketSrcModuleWidgetQt : public QFrame {
 public:
-    MarketModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
-    virtual ~MarketModuleWidgetQt() = default;
-    MarketModuleWidgetQt(const MarketModuleWidgetQt&) = delete;
-    MarketModuleWidgetQt& operator=(const MarketModuleWidgetQt&) = delete;
+    MarketSrcModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
+    virtual ~MarketSrcModuleWidgetQt() = default;
+    MarketSrcModuleWidgetQt(const MarketSrcModuleWidgetQt&) = delete;
+    MarketSrcModuleWidgetQt& operator=(const MarketSrcModuleWidgetQt&) = delete;
 
 protected:
 

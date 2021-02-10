@@ -96,7 +96,7 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
 
             // Add all module widgets
             for (const auto data : manager_->getModules()) {
-                auto w = new MarketModuleWidgetQt(data, srcMarket, manager_);
+                auto w = new MarketSrcModuleWidgetQt(data, srcMarket, manager_);
                 moduleWidgets_.push_back(w);
                 srcVL->addWidget(w);
             }
