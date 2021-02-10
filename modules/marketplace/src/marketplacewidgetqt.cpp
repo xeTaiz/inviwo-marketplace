@@ -79,6 +79,7 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     auto binMarket = new QFrame();
     auto binVL = new QVBoxLayout();
     binMarket->setLayout(binVL);
+    tabWidget->setStyleSheet("QTabBar::tab { height: 3em; width: 20em; font-size:15pt; }");
     tabWidget->addTab(srcMarket, QString("Source Code"));
     tabWidget->addTab(binMarket, QString("Binaries"));
 
