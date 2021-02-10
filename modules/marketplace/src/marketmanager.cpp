@@ -172,6 +172,51 @@ void MarketManager::updateModuleSrcData() {
     }
 }
 
+void MarketManager::updateModuleBinData() {
+    // Get inviwo-marketplace if not in externalModulesPath_
+    if (!std::filesystem::exists(externalModulesPath_ / "inviwo-marketplace")) {
+        const auto dir_name_ = gitClone(repositoryUrl_, externalModulesPath_.string());
+        if (!dir_name_) {
+            LogInfo("Unable to clone " + repositoryUrl_);
+            return;
+        }
+    }
+    // Read module URLs from inviwo-marketplace
+    const auto path = externalModulesPath_ / "inviwo-marketplace" / "bin_modules.txt";
+    std::ifstream file;
+    file.open(path.string(), std::ios::in);
+    if (!file.is_open()) {
+        LogInfo("Could not open " + path.string());
+        return;
+    }
+    std::string tmp;
+    std::vector<std::string> urls;
+    while (file >> tmp) {
+        urls.emplace_back(tmp);
+        util::log(IVW_CONTEXT, "Found module URL " + tmp, LogLevel::Info, LogAudience::User);
+    }
+    // Populate binModules_
+    binModules_.clear();
+    for (auto url : urls) {
+        auto moduleName = url.substr(url.rfind('/') + 1);
+        size_t pos = moduleName.find("inviwo");
+        if (pos != std::string::npos) {
+            moduleName.erase(pos, 6);
+        }
+        moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
+#ifdef _WIN32
+        std::filesystem::path path(externalModulesPath_ / ("inviwo-module-" + moduleName + "module.dll");
+#else
+        std::filesystem::path path(externalModulesPath_ / ("libinviwo-module-" + moduleName + "module.so"));
+#endif
+        if (std::filesystem::exists(path)) {
+            binModules_.push_back({url, moduleName, path});
+        } else {
+            binModules_.push_back({url, moduleName, std::nullopt});
+        }
+    }
+}
+
 const std::vector<ModuleSrcData> MarketManager::getSrcModules() const {
     return srcModules_;
 }
