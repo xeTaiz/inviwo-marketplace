@@ -205,7 +205,7 @@ void MarketManager::updateModuleBinData() {
         }
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
 #ifdef _WIN32
-        std::filesystem::path path(externalModulesPath_ / ("inviwo-module-" + moduleName + "module.dll");
+        std::filesystem::path path(externalModulesPath_ / ("inviwo-module-" + moduleName + "module.dll"));
 #else
         std::filesystem::path path(externalModulesPath_ / ("libinviwo-module-" + moduleName + "module.so"));
 #endif
