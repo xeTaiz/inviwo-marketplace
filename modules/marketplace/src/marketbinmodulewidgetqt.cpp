@@ -28,11 +28,75 @@
  *********************************************************************************/
 
 #include <inviwo/marketplace/marketbinmodulewidgetqt.h>
+#include <modules/qtwidgets/inviwoqtutils.h>
+
+#include <QWidget>
+#include <QFrame>
+#include <QLabel>
+#include <QPushButton>
+#include <QString>
+#include <QSize>
+#include <QGridLayout>
+#include <QTextEdit>
 
 namespace inviwo {
 
-MarketBinModuleWidgetQt::MarketBinModuleWidgetQt() {
+MarketBinModuleWidgetQt::MarketBinModuleWidgetQt(const ModuleBinData& data, QWidget* parent, std::shared_ptr<MarketManager> manager)
+    : QFrame(parent)
+    , manager_(manager)
+    {
+        setFrameStyle(QFrame::Box | QFrame::Plain);
+        setLineWidth(1);
+        setMaximumHeight(300);
+        setMinimumHeight(150);
+        setMinimumWidth(500);
+        QSizePolicy policy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        setSizePolicy(policy);
 
+        auto grid = new QGridLayout();
+        this->setLayout(grid);
+
+        // Title and Description
+        // Name
+        moduleName_ = new QLabel(QString::fromStdString(data.name), this);
+        QFont font = moduleName_->font();
+        font.setPointSize(24);
+        moduleName_->setFont(font);
+        grid->addWidget(moduleName_, 0, 0, 1, 2);
+
+        // Description TODO: query from github
+        description_ = new QTextEdit(this);
+        description_->setText(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu felis cursus, "
+            "dignissim justo eu, convallis est. Proin commodo in enim nec sollicitudin. Morbi "
+            "auctor ultricies turpis, eget interdum massa posuere fermentum.");
+        description_->setFrameShape(QFrame::NoFrame);
+        description_->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        grid->addWidget(description_, 1, 0, 3, 2);
+
+        // Buttons
+        auto buttonWidget = new QWidget();
+        auto btnLayout = new QVBoxLayout();
+        grid->addWidget(buttonWidget, 1, 2, 3, 1);
+        buttonWidget->setLayout(btnLayout);
+
+        downloadBtn_ = new QPushButton(QString("Download"), buttonWidget);
+        btnLayout->addWidget(downloadBtn_);
+        connect(downloadBtn_, &QPushButton::released, this,
+            [this, data] () {
+                int code = manager_->downloadBinaryModule(data);
+                if (code == 0) {
+                    downloadBtn_->setEnabled(false);
+                }
+                manager_->updateModuleBinData();
+            });
+
+        loadBtn_ = new QPushButton(QString("Load Module"), buttonWidget);
+        btnLayout->addWidget(loadBtn_);
+        connect(loadBtn_, &QPushButton::released, this,
+            [this, data] () {
+                manager_->tryLoadModule(data);
+            });
 }
 
 }  // namespace inviwo

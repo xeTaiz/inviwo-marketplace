@@ -141,9 +141,9 @@ MarketSrcModuleWidgetQt::MarketSrcModuleWidgetQt(const ModuleSrcData& data, QWid
                     cloned_ = true;
                     configureBtn_->setVisible(true);
                     configureBtn_->setEnabled(true);
+                    cloneBtn_->setEnabled(false);
                 }
                 manager_->updateModuleSrcData();
-                cloneBtn_->setEnabled(false);
             });
         // Pull
         connect(pullBtn_, &QPushButton::released, this,

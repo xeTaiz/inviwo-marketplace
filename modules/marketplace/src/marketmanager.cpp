@@ -172,8 +172,11 @@ void MarketManager::updateModuleSrcData() {
     }
 }
 
-const std::vector<ModuleSrcData> MarketManager::getModules() const {
+const std::vector<ModuleSrcData> MarketManager::getSrcModules() const {
     return srcModules_;
+}
+const std::vector<ModuleBinData> MarketManager::getBinModules() const {
+    return binModules_;
 }
 
 int MarketManager::cloneModule(const ModuleSrcData& data) {
@@ -295,8 +298,15 @@ int MarketManager::cmakeConfigure(const ModuleSrcData& data) {
     return process.exitCode();
 }
 
-void MarketManager::tryLoadModule() {
-    app_->getModuleManager().tryRegisterModule(
-        "/home/dome/.inviwo/marketplace/libinviwo-module-markettestmodule.so");
+int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
+    return 0;
+}
+
+void MarketManager::tryLoadModule(const ModuleBinData& data) {
+    if (data.path) {
+        app_->getModuleManager().tryRegisterModule(data.path->string());
+    } else {
+        LogInfo("Binary Module " << data.name << " has invalid path.");
+    }
 }
 }  // namespace inviwo
