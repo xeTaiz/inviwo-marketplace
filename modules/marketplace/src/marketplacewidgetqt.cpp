@@ -39,6 +39,7 @@
 #include <QPushButton>
 #include <QFrame>
 #include <QFont>
+#include <QTabWidget>
 
 namespace inviwo {
 
@@ -68,31 +69,47 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     QFont font = title->font();
     font.setPointSize(30);
     title->setFont(font);
-    auto refresh = new QPushButton(QString("Refresh"), titleWidget);
+    hLayout->addWidget(title);
+
+    auto tabWidget = new QTabWidget(mainWidget);
+    vLayout->addWidget(tabWidget);
+    auto srcMarket = new QFrame();
+    auto srcVL = new QVBoxLayout();
+    srcMarket->setLayout(srcVL);
+    auto binMarket = new QFrame();
+    auto binVL = new QVBoxLayout();
+    binMarket->setLayout(binVL);
+    tabWidget->addTab(srcMarket, QString("Source Code"));
+    tabWidget->addTab(binMarket, QString("Binaries"));
+
+
+    //      SOURCE   TAB
+    auto refresh = new QPushButton(QString("Refresh"), srcMarket);
     connect(refresh, &QPushButton::released, this,
-        [this, vLayout, mainWidget] () {
+        [this, srcVL, srcMarket] () {
             manager_->updateModuleData();
 
             for (auto w : moduleWidgets_) {
-                vLayout->removeWidget(w);
+                srcVL->removeWidget(w);
             }
             moduleWidgets_.clear();
 
             // Add all module widgets
             for (const auto data : manager_->getModules()) {
-                auto w = new MarketModuleWidgetQt(data, mainWidget, manager_);
+                auto w = new MarketModuleWidgetQt(data, srcMarket, manager_);
                 moduleWidgets_.push_back(w);
-                vLayout->addWidget(w);
+                srcVL->addWidget(w);
             }
         });
-    hLayout->addWidget(title);
-    hLayout->addWidget(refresh);
+    srcVL->addWidget(refresh);
 
-    auto loadTest = new QPushButton(QString("Load Test Module"), titleWidget);
+
+    //      BINARY   TAB
+    auto loadTest = new QPushButton(QString("Load Test Module"), binMarket);
     connect(loadTest, &QPushButton::released, this, [this]() {
         manager_->tryLoadModule();
     });
-    hLayout->addWidget(loadTest);
+    binVL->addWidget(loadTest);
     // Settings
     // auto grid = new QGridLayout();
 
