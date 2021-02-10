@@ -5,22 +5,24 @@ find_package(Qt5Gui QUIET REQUIRED)
 find_package(Qt5Widgets QUIET REQUIRED)
 
 set(HEADER_FILES
+    include/inviwo/marketplace/marketbinmodulewidgetqt.h
     include/inviwo/marketplace/marketmanager.h
-    include/inviwo/marketplace/marketsrcmodulewidgetqt.h
     include/inviwo/marketplace/marketplacemodule.h
     include/inviwo/marketplace/marketplacemoduledefine.h
     include/inviwo/marketplace/marketplacesettings.h
     include/inviwo/marketplace/marketplacewidgetqt.h
+    include/inviwo/marketplace/marketsrcmodulewidgetqt.h
     include/inviwo/marketplace/processors/marketplace.h
 )
 ivw_group("Header Files" ${HEADER_FILES})
 
 set(SOURCE_FILES
+    src/marketbinmodulewidgetqt.cpp
     src/marketmanager.cpp
-    src/marketsrcmodulewidgetqt.cpp
     src/marketplacemodule.cpp
     src/marketplacesettings.cpp
     src/marketplacewidgetqt.cpp
+    src/marketsrcmodulewidgetqt.cpp
     src/processors/marketplace.cpp
 )
 ivw_group("Source Files" ${SOURCE_FILES})
