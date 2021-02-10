@@ -31,7 +31,6 @@
 #include <inviwo/marketplace/marketplacemoduledefine.h>
 #include <inviwo/marketplace/marketmanager.h>
 #include <inviwo/qt/editor/inviwomainwindow.h>
-#include <modules/qtwidgets/inviwodockwidget.h>
 
 #include <vector>
 #include <string>
@@ -49,11 +48,11 @@ namespace inviwo {
 
 /**
  * \brief QT Widget for Modules Marketplace
- * Implements the items representing one module
+ * Implements the items representing one module for source code
  */
 class IVW_MODULE_MARKETPLACE_API MarketSrcModuleWidgetQt : public QFrame {
 public:
-    MarketSrcModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
+    MarketSrcModuleWidgetQt(const ModuleSrcData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
     virtual ~MarketSrcModuleWidgetQt() = default;
     MarketSrcModuleWidgetQt(const MarketSrcModuleWidgetQt&) = delete;
     MarketSrcModuleWidgetQt& operator=(const MarketSrcModuleWidgetQt&) = delete;

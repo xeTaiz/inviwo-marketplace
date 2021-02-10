@@ -87,7 +87,7 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     auto refresh = new QPushButton(QString("Refresh"), srcMarket);
     connect(refresh, &QPushButton::released, this,
         [this, srcVL, srcMarket] () {
-            manager_->updateModuleData();
+            manager_->updateModuleSrcData();
 
             for (auto w : moduleWidgets_) {
                 srcVL->removeWidget(w);

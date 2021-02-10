@@ -61,7 +61,7 @@ private:
     std::shared_ptr<MarketManager> manager_;
 
     std::vector<MarketSrcModuleWidgetQt*> moduleWidgets_;
-    std::vector<std::string> modules_;
+    std::vector<std::string> srcModules_;
     QTextEdit* description_;
     QToolButton* getModuleBtn_;
 
