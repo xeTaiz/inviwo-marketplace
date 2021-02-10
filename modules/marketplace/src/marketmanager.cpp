@@ -131,7 +131,7 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
         return std::nullopt;
 }
 
-void MarketManager::updateModuleData() {
+void MarketManager::updateModuleSrcData() {
     // Get inviwo-marketplace if not in externalModulesPath_
     if (!std::filesystem::exists(externalModulesPath_ / "inviwo-marketplace")) {
         const auto dir_name_ = gitClone(repositoryUrl_, externalModulesPath_.string());
@@ -154,8 +154,8 @@ void MarketManager::updateModuleData() {
         urls.emplace_back(tmp);
         util::log(IVW_CONTEXT, "Found module URL " + tmp, LogLevel::Info, LogAudience::User);
     }
-    // Populate modules_
-    modules_.clear();
+    // Populate srcModules_
+    srcModules_.clear();
     for (auto url : urls) {
         auto moduleName = url.substr(url.rfind('/')+1);
         size_t pos = moduleName.find("inviwo");
@@ -165,18 +165,18 @@ void MarketManager::updateModuleData() {
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
         std::filesystem::path path (externalModulesPath_ / moduleName);
         if (std::filesystem::exists(path)) {
-            modules_.push_back({url, moduleName, path});
+            srcModules_.push_back({url, moduleName, path});
         } else {
-            modules_.push_back({url, moduleName, std::nullopt});
+            srcModules_.push_back({url, moduleName, std::nullopt});
         }
     }
 }
 
-const std::vector<ModuleData> MarketManager::getModules() const {
-    return modules_;
+const std::vector<ModuleSrcData> MarketManager::getModules() const {
+    return srcModules_;
 }
 
-int MarketManager::cloneModule(const ModuleData& data) {
+int MarketManager::cloneModule(const ModuleSrcData& data) {
     const auto dir_name_ = gitClone(data.url, externalModulesPath_.make_preferred().string());
     if (!dir_name_) {
         LogInfo("Unable to clone " + data.url);
@@ -205,11 +205,11 @@ int MarketManager::cloneModule(const ModuleData& data) {
     return 0;
 }
 
-int MarketManager::updateModule(const ModuleData& data) {
+int MarketManager::updateModule(const ModuleSrcData& data) {
     QProcess process;
 
     if (!data.path) {
-        LogInfo("ModuleData does not have a path");
+        LogInfo("ModuleSrcData does not have a path");
         return 1;
     }
     auto gitExec = app_->getSettingsByType<MarketplaceSettings>()->gitExec_.get();
@@ -247,7 +247,7 @@ int MarketManager::updateModule(const ModuleData& data) {
     return process.exitCode();
 }
 
-int MarketManager::cmakeConfigure(const ModuleData& data) {
+int MarketManager::cmakeConfigure(const ModuleSrcData& data) {
     QProcess process;
 
     auto cmakeExec = app_->getSettingsByType<MarketplaceSettings>()->cmakeExec_.get();

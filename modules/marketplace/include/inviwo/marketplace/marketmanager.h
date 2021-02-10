@@ -40,7 +40,7 @@
 namespace inviwo {
 
 
-struct ModuleData {
+struct ModuleSrcData {
     std::string url;
     std::string name;
     std::optional<std::filesystem::path> path;
@@ -57,20 +57,20 @@ public:
 
     std::optional<std::string> gitClone(const std::string&, const std::string&);
 
-    void updateModuleData();
-    int cloneModule(const ModuleData&);
-    int updateModule(const ModuleData&);
-    int cmakeConfigure(const ModuleData& data);
+    void updateModuleSrcData();
+    int cloneModule(const ModuleSrcData&);
+    int updateModule(const ModuleSrcData&);
+    int cmakeConfigure(const ModuleSrcData& data);
     void tryLoadModule();
 
-    const std::vector<ModuleData> getModules() const;
+    const std::vector<ModuleSrcData> getModules() const;
 
     private:
         InviwoApplication* app_;
         std::filesystem::path inviwoSourcePath_;
         std::filesystem::path externalModulesPath_;
         std::string repositoryUrl_;
-        std::vector<ModuleData> modules_;
+        std::vector<ModuleSrcData> srcModules_;
     };
 
 }  // namespace inviwo

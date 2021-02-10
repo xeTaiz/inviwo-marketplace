@@ -57,7 +57,7 @@ QToolButton* createButton(const std::string& str, const std::string& iconpath, Q
     return button;
 }
 
-MarketSrcModuleWidgetQt::MarketSrcModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager)
+MarketSrcModuleWidgetQt::MarketSrcModuleWidgetQt(const ModuleSrcData& data, QWidget* parent, std::shared_ptr<MarketManager> manager)
     : QFrame(parent)
     , manager_(manager)
     {
@@ -142,7 +142,7 @@ MarketSrcModuleWidgetQt::MarketSrcModuleWidgetQt(const ModuleData& data, QWidget
                     configureBtn_->setVisible(true);
                     configureBtn_->setEnabled(true);
                 }
-                manager_->updateModuleData();
+                manager_->updateModuleSrcData();
                 cloneBtn_->setEnabled(false);
             });
         // Pull
