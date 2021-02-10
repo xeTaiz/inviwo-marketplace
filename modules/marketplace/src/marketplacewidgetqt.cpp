@@ -84,32 +84,50 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
 
 
     //      SOURCE   TAB
-    auto refresh = new QPushButton(QString("Refresh"), srcMarket);
-    connect(refresh, &QPushButton::released, this,
+    auto refreshSrc = new QPushButton(QString("Refresh"), srcMarket);
+    connect(refreshSrc, &QPushButton::released, this,
         [this, srcVL, srcMarket] () {
             manager_->updateModuleSrcData();
 
-            for (auto w : moduleWidgets_) {
+            for (auto w : moduleSrcWidgets_) {
                 srcVL->removeWidget(w);
             }
-            moduleWidgets_.clear();
+            moduleSrcWidgets_.clear();
 
             // Add all module widgets
-            for (const auto data : manager_->getModules()) {
+            for (const auto data : manager_->getSrcModules()) {
                 auto w = new MarketSrcModuleWidgetQt(data, srcMarket, manager_);
-                moduleWidgets_.push_back(w);
+                moduleSrcWidgets_.push_back(w);
                 srcVL->addWidget(w);
             }
         });
-    srcVL->addWidget(refresh);
+    srcVL->addWidget(refreshSrc);
 
 
     //      BINARY   TAB
-    auto loadTest = new QPushButton(QString("Load Test Module"), binMarket);
-    connect(loadTest, &QPushButton::released, this, [this]() {
-        manager_->tryLoadModule();
+    auto refreshBin = new QPushButton(QString("Refresh"), binMarket);
+    connect(refreshBin, &QPushButton::released, this,
+        [this, binVL, binMarket]() {
+        manager_->updateModuleSrcData();
+
+        for (auto w : moduleBinWidgets_) {
+            binVL->removeWidget(w);
+        }
+        moduleBinWidgets_.clear();
+
+        // Add all module widgets
+        for (const auto data : manager_->getBinModules()) {
+            auto w = new MarketBinModuleWidgetQt(data, binMarket, manager_);
+            moduleBinWidgets_.push_back(w);
+            binVL->addWidget(w);
+        }
     });
-    binVL->addWidget(loadTest);
+    binVL->addWidget(refreshBin);
+    // auto loadTest = new QPushButton(QString("Load Test Module"), binMarket);
+    // connect(loadTest, &QPushButton::released, this, [this]() {
+    //     manager_->tryLoadModule();
+    // });
+    // binVL->addWidget(loadTest);
     // Settings
     // auto grid = new QGridLayout();
 

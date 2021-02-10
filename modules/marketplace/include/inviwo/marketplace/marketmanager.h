@@ -46,6 +46,13 @@ struct ModuleSrcData {
     std::optional<std::filesystem::path> path;
 };
 
+// This is a duplicate, but they may be different at some point...
+struct ModuleBinData {
+    std::string url;
+    std::string name;
+    std::optional<std::filesystem::path> path;
+};
+
 /**
  * \brief Handles Marketplace Modules
  * Provides functions to update available modules, downloading, building and loading
@@ -57,13 +64,18 @@ public:
 
     std::optional<std::string> gitClone(const std::string&, const std::string&);
 
+    // Source Market
     void updateModuleSrcData();
     int cloneModule(const ModuleSrcData&);
     int updateModule(const ModuleSrcData&);
-    int cmakeConfigure(const ModuleSrcData& data);
-    void tryLoadModule();
+    int cmakeConfigure(const ModuleSrcData&);
+    const std::vector<ModuleSrcData> getSrcModules() const;
 
-    const std::vector<ModuleSrcData> getModules() const;
+    // Binary Market
+    void updateModuleBinData();
+    int downloadBinaryModule(const ModuleBinData&);
+    void tryLoadModule(const ModuleBinData&);
+    const std::vector<ModuleBinData> getBinModules() const;
 
     private:
         InviwoApplication* app_;
@@ -71,6 +83,7 @@ public:
         std::filesystem::path externalModulesPath_;
         std::string repositoryUrl_;
         std::vector<ModuleSrcData> srcModules_;
+        std::vector<ModuleBinData> binModules_;
     };
 
 }  // namespace inviwo

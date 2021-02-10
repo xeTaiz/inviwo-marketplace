@@ -31,6 +31,7 @@
 #include <inviwo/core/common/inviwo.h>
 #include <inviwo/marketplace/marketplacemoduledefine.h>
 #include <inviwo/marketplace/marketsrcmodulewidgetqt.h>
+#include <inviwo/marketplace/marketbinmodulewidgetqt.h>
 #include <inviwo/marketplace/marketmanager.h>
 #include <inviwo/qt/editor/inviwomainwindow.h>
 #include <modules/qtwidgets/inviwodockwidget.h>
@@ -60,8 +61,9 @@ protected:
 private:
     std::shared_ptr<MarketManager> manager_;
 
-    std::vector<MarketSrcModuleWidgetQt*> moduleWidgets_;
-    std::vector<std::string> srcModules_;
+    std::vector<MarketSrcModuleWidgetQt*> moduleSrcWidgets_;
+    std::vector<MarketBinModuleWidgetQt*> moduleBinWidgets_;
+
     QTextEdit* description_;
     QToolButton* getModuleBtn_;
 

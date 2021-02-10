@@ -50,7 +50,7 @@ namespace inviwo {
  */
 class IVW_MODULE_MARKETPLACE_API MarketBinModuleWidgetQt : public QFrame {
 public:
-    MarketBinModuleWidgetQt();
+    MarketBinModuleWidgetQt(const ModuleBinData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
     virtual ~MarketBinModuleWidgetQt() = default;
     MarketBinModuleWidgetQt(const MarketBinModuleWidgetQt&) = delete;
     MarketBinModuleWidgetQt& operator=(const MarketBinModuleWidgetQt&) = delete;
