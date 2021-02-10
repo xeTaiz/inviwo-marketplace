@@ -6,7 +6,7 @@ find_package(Qt5Widgets QUIET REQUIRED)
 
 set(HEADER_FILES
     include/inviwo/marketplace/marketmanager.h
-    include/inviwo/marketplace/marketmodulewidgetqt.h
+    include/inviwo/marketplace/marketsrcmodulewidgetqt.h
     include/inviwo/marketplace/marketplacemodule.h
     include/inviwo/marketplace/marketplacemoduledefine.h
     include/inviwo/marketplace/marketplacesettings.h
@@ -17,7 +17,7 @@ ivw_group("Header Files" ${HEADER_FILES})
 
 set(SOURCE_FILES
     src/marketmanager.cpp
-    src/marketmodulewidgetqt.cpp
+    src/marketsrcmodulewidgetqt.cpp
     src/marketplacemodule.cpp
     src/marketplacesettings.cpp
     src/marketplacewidgetqt.cpp

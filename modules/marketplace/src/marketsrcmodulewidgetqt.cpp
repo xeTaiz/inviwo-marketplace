@@ -27,7 +27,7 @@
  *
  *********************************************************************************/
 
-#include <inviwo/marketplace/marketmodulewidgetqt.h>
+#include <inviwo/marketplace/marketsrcmodulewidgetqt.h>
 #include <modules/qtwidgets/inviwoqtutils.h>
 
 #include <QWidget>
@@ -57,7 +57,7 @@ QToolButton* createButton(const std::string& str, const std::string& iconpath, Q
     return button;
 }
 
-MarketModuleWidgetQt::MarketModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager)
+MarketSrcModuleWidgetQt::MarketSrcModuleWidgetQt(const ModuleData& data, QWidget* parent, std::shared_ptr<MarketManager> manager)
     : QFrame(parent)
     , manager_(manager)
     {
