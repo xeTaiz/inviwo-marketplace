@@ -86,7 +86,9 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
                     editor_ =
                         std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, manager_);
                     win->addDockWidget(Qt::BottomDockWidgetArea, editor_.get());
+                    editor_->hide();
                     editor_->loadState();
+                    QObject::connect(editor_.get(), &QObject::destroyed, [this](QObject*) { editor_.release(); });
                     editor_->setVisible(true);
                 } else {  // Show if widget already exists
                     editor_->setVisible(true);
