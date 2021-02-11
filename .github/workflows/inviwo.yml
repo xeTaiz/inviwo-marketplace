@@ -13,8 +13,9 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-20.04]
-        python-version: ['3.6', '3.7', '3.8', 'pypy-3.6']
+#        os: [windows-latest, macos-latest, ubuntu-20.04]
+        os: [windows-latest, ubuntu-20.04]
+        python-version: ['3.9']
         include:
           - os: 'windows-latest'
             triplet: 'x64-windows'
