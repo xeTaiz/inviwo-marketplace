@@ -13,8 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-#        os: [windows-latest, macos-latest, ubuntu-20.04]
-        os: [windows-latest, ubuntu-20.04]
+        os: [windows-latest, macos-latest, ubuntu-20.04]
         python-version: ['3.9']
         include:
           - os: 'windows-latest'
@@ -44,6 +43,7 @@ jobs:
         set -x
         cd $VCPKG_INSTALLATION_ROOT
         git fetch --all
+        git checkout $IVW_VCPKG_SHA
         ./bootstrap-vcpkg.sh
             
     - name: 'Setup NuGet Credentials'
