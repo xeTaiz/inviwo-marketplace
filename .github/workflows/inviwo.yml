@@ -14,7 +14,6 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-20.04]
-        python-version: ['3.9']
         include:
           - os: 'windows-latest'
             triplet: 'x64-windows'
@@ -128,6 +127,11 @@ jobs:
         -DIVW_USE_OPENMP=OFF
         -DIVW_USE_OPENEXR=OFF
         -DIVW_MODULE_CIMG=ON
+        -DIVW_MODULE_PYTHON3=OFF
+        -DIVW_MODULE_PYTHON3QT=OFF
+        -DIVW_MODULE_DATAFRAMEPYTHON=OFF
+        -DIVW_PACKAGE_EMBED_PYTHON=OFF
+        -DIVW_APP_PYTHON=OFF
         -DIVW_USE_EXTERNAL_ASSIMP=ON
         -DIVW_USE_EXTERNAL_BENCHMARK=ON
         -DIVW_USE_EXTERNAL_EIGEN=ON
