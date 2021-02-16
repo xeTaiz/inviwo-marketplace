@@ -188,10 +188,10 @@ jobs:
     #    name: inviwo-installer-ubuntu
     #    path: build/inviwo-v*.zip
 
-    - name: Doxygen
-      if: runner.os != 'Linux' # generate processor previews fails to load qt plugins
-      working-directory: build
-      shell: bash
-      run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target DOXY-ALL 
+    #- name: Doxygen
+    #  if: runner.os != 'Linux' # generate processor previews fails to load qt plugins
+    #  working-directory: build
+    #  shell: bash
+    #  run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target DOXY-ALL 
 
 
