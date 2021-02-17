@@ -8,6 +8,7 @@ env:
   #IVW_VCPKG_SHA: '399458a9d9a763c0e06cc979464a17074fe8517d'  # nuget verbose version, git remote add inviwo https://github.com/inviwo/vcpkg.git
   VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'        # recognized by vcpkg
   # QT_DEBUG_PLUGINS: 1                                         # print qt plugin debug info
+  MODULE_NAME: markettestmodule
 
 jobs:
   build:
@@ -19,23 +20,23 @@ jobs:
             triplet: 'x64-windows'
             mono: ''
             cmake: '-DIVW_MODULE_HDF5=ON'
-            generator: 'Visual Studio 16 2019' 
+            generator: 'Visual Studio 16 2019'
           - os: 'macos-latest'
             triplet: 'x64-osx'
             mono: 'mono'
             cmake: '-DIVW_MODULE_HDF5=OFF'
-            generator: 'Ninja' 
+            generator: 'Ninja'
           - os: 'ubuntu-20.04'
             triplet: 'x64-linux'
             mono: 'mono'
-            cmake: '-DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF' 
-            generator: 'Ninja' 
+            cmake: '-DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF'
+            generator: 'Ninja'
       fail-fast: false
-      
+
     runs-on: ${{ matrix.os }}
     timeout-minutes: 360
-    
-    steps:  
+
+    steps:
     - name: Setup VCPKG
       shell: bash
       run: |
@@ -45,7 +46,7 @@ jobs:
         git fetch --all
         git reset --hard $IVW_VCPKG_SHA
         ./bootstrap-vcpkg.sh
-            
+
     - name: 'Setup NuGet Credentials'
       shell: bash
       run: >
@@ -62,7 +63,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libglew-dev ninja-build doxygen-latex
-      
+
     - name: Brew Install
       shell: bash
       if: runner.os == 'macOS'
@@ -80,35 +81,35 @@ jobs:
         scoop install nsis doxygen latex
         echo "~/scoop/shims" >> $GITHUB_PATH
         echo "$(Split-Path -Path (Get-Command dvips).Path -Parent)" >> $GITHUB_PATH
-        
+
     - name: VCPKG Install
       shell: bash
       run: >
         vcpkg --triplet ${{ matrix.triplet }} install
-        assimp benchmark cimg eigen3 fmt freetype glfw3 glm gtest zlib 
-        hdf5[cpp,zlib] libjpeg-turbo libpng minizip nlohmann-json 
-        openexr pybind11 python3 tclap tiff tinydir tinyxml2 utfcpp 
-    
+        assimp benchmark cimg eigen3 fmt freetype glfw3 glm gtest zlib
+        hdf5[cpp,zlib] libjpeg-turbo libpng minizip nlohmann-json
+        openexr pybind11 python3 tclap tiff tinydir tinyxml2 utfcpp
+
     - name: Glew Install
       shell: bash
       if: runner.os != 'Linux'
       run: vcpkg --triplet ${{ matrix.triplet }} install glew
-    
+
     - name: Install Numpy
       shell: bash
       run: pip3 install numpy
-   
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         version: 5.15.0
         dir: ${{ github.workspace }}
-           
+
     - uses: actions/checkout@v2
-      with: 
+      with:
         path: inviwo
         submodules: recursive
-        
+
     - name: Configure CMake
       shell: bash
       run: >
@@ -118,7 +119,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
         -DIVW_CFG_CMAKE_DEBUG=ON
         -DIVW_CFG_PRECOMPILED_HEADERS=OFF
-        -DIVW_CFG_FORCE_ASSERTIONS=ON 
+        -DIVW_CFG_FORCE_ASSERTIONS=ON
         -DIVW_DOXYGEN_PROJECT=ON
         -DIVW_PACKAGE_INSTALLER=ON
         -DIVW_TEST_UNIT_TESTS_RUN_ON_BUILD=OFF
@@ -132,6 +133,7 @@ jobs:
         -DIVW_MODULE_DATAFRAMEPYTHON=OFF
         -DIVW_PACKAGE_EMBED_PYTHON=OFF
         -DIVW_APP_PYTHON=OFF
+        -DIVW_MODULE_MARKETTESTMODULE=ON
         -DIVW_USE_EXTERNAL_ASSIMP=ON
         -DIVW_USE_EXTERNAL_BENCHMARK=ON
         -DIVW_USE_EXTERNAL_EIGEN=ON
@@ -151,21 +153,29 @@ jobs:
         -DIVW_USE_EXTERNAL_PYBIND11=ON
         -DIVW_USE_EXTERNAL_OPENEXR=ON
         ${{ matrix.cmake }}
-    
+
     - name: Setup C++
       uses: Trass3r/setup-cpp@v1
-    
+
     - name: Build
       timeout-minutes: 180
       working-directory: build
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel
 
+    - name: Upload Module Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.MODULE_NAME }}
+        path: |
+          build/bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll
+          build/modules/${{ env.MODULE_NAME}}/
+
     - name: Package
       if: runner.os == 'Windows'
       working-directory: build
       shell: bash
-      run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target package 
+      run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target package
 
     - name: Upload Windows
       if: runner.os == 'Windows'
@@ -173,7 +183,7 @@ jobs:
       with:
         name: inviwo-installer-win
         path: build/inviwo-v*.exe
-   
+
     #- name: Upload macOS
     #  if: runner.os == 'macOS'
     #  uses: actions/upload-artifact@v2
@@ -192,6 +202,4 @@ jobs:
     #  if: runner.os != 'Linux' # generate processor previews fails to load qt plugins
     #  working-directory: build
     #  shell: bash
-    #  run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target DOXY-ALL 
-
-
+    #  run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target DOXY-ALL
