@@ -3,8 +3,10 @@ ivw_module(Marketplace)
 find_package(Qt5Core QUIET REQUIRED)
 find_package(Qt5Gui QUIET REQUIRED)
 find_package(Qt5Widgets QUIET REQUIRED)
+find_package(Qt5Network QUIET REQUIRED)
 
 set(HEADER_FILES
+    include/inviwo/marketplace/downloadmanager.h
     include/inviwo/marketplace/marketbinmodulewidgetqt.h
     include/inviwo/marketplace/marketmanager.h
     include/inviwo/marketplace/marketplacemodule.h
@@ -17,6 +19,7 @@ set(HEADER_FILES
 ivw_group("Header Files" ${HEADER_FILES})
 
 set(SOURCE_FILES
+    src/downloadmanager.cpp
     src/marketbinmodulewidgetqt.cpp
     src/marketmanager.cpp
     src/marketplacemodule.cpp
@@ -38,7 +41,7 @@ set(TEST_FILES
 ivw_add_unittest(${TEST_FILES})
 
 ivw_create_module(${SOURCE_FILES} ${HEADER_FILES} ${SHADER_FILES})
-target_link_libraries(inviwo-module-marketplace PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)
+target_link_libraries(inviwo-module-marketplace PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network)
 
 # Add shader directory to install package
 #ivw_add_to_module_pack(${CMAKE_CURRENT_SOURCE_DIR}/glsl)

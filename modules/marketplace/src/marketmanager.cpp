@@ -42,6 +42,13 @@
 #include <QProcess>
 #include <QDir>
 
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QNetworkReply>
+#include <QFile>
+#include <QObject>
+
 namespace inviwo {
 
 std::optional<std::string> getModuleName(const std::filesystem::path& path) {
@@ -225,9 +232,9 @@ void MarketManager::updateModuleBinData() {
         }
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
 #ifdef _WIN32
-        std::filesystem::path path(*marketPath / ("inviwo-module-" + moduleName + "module.dll"));
+        std::filesystem::path path(*marketPath / moduleName / ("inviwo-module-" + moduleName + "module.dll"));
 #else
-        std::filesystem::path path(*marketPath / ("libinviwo-module-" + moduleName + "module.so"));
+        std::filesystem::path path(*marketPath / moduleName / ("libinviwo-module-" + moduleName + "module.so"));
 #endif
         if (std::filesystem::exists(path)) {
             binModules_.push_back({url, moduleName, path});
@@ -378,6 +385,44 @@ int MarketManager::cmakeConfigure(const ModuleSrcData& data) {
 }
 
 int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
+    auto marketPath = getMarketDir();
+    if (!marketPath) {
+        LogInfo(
+            "No valid Marketplace Directory set. Navigate to View > Settings > Marketplace and "
+            "provide a path for the Marketplace.");
+        return 1;
+    }
+    std::filesystem::path moduleDir;
+    if (data.path){
+        LogInfo(*data.path);
+        moduleDir = *data.path;
+    } else {
+        moduleDir = *marketPath / data.name;
+    }
+    LogInfo("ModuleDir: " << moduleDir.string());
+    if (!std::filesystem::exists(moduleDir)) {
+        std::filesystem::create_directory(moduleDir);
+        LogInfo("Created moduleDir: " << moduleDir.string());
+    }
+
+    auto zipPath = moduleDir / (data.name + ".zip");
+    dlManager_.download(
+        "https://nightly.link/xeTaiz/inviwo-marketplace/actions/artifacts/41536624.zip", zipPath.string());
+
+
+
+
+    // QNetworkAccessManager nm;
+    // QObject::connect(
+    //     &nm, &QNetworkAccessManager::finished, [moduleDir, data, this](QNetworkReply* reply) {
+    //         QFile zipFile(QString::fromStdString(zipPath));
+    //         LogInfo("zipFile: " << zipPath.string());
+    //         zipFile.write(reply->readAll());
+    //         zipFile.close();
+    //         LogInfo("Finished writing.");
+    //     });
+    // QNetworkReply* reply = nm.get(QNetworkRequest(QUrl()));
+    // LogInfo("Called nm.get()");
     return 0;
 }
 

@@ -29,63 +29,31 @@
 #pragma once
 
 #include <inviwo/marketplace/marketplacemoduledefine.h>
-#include <inviwo/marketplace/downloadmanager.h>
-#include <inviwo/core/common/inviwoapplication.h>
 
-#include <string>
-#include <optional>
+#include <memory>
 #include <vector>
-#include <filesystem>
-#include <unordered_map>
+
+#include <QNetworkAccessManager>
+
+class QNetworkReply;
 
 namespace inviwo {
 
-
-struct ModuleSrcData {
-    std::string url;
-    std::string name;
-    std::optional<std::filesystem::path> path;
-};
-
-// This is a duplicate, but they may be different at some point...
-struct ModuleBinData {
-    std::string url;
-    std::string name;
-    std::optional<std::filesystem::path> path;
-};
-
 /**
- * \brief Handles Marketplace Modules
- * Provides functions to update available modules, downloading, building and loading
+ * \brief VERY_BRIEFLY_DESCRIBE_THE_CLASS
+ * DESCRIBE_THE_CLASS_FROM_A_DEVELOPER_PERSPECTIVE
  */
-class IVW_MODULE_MARKETPLACE_API MarketManager {
+class IVW_MODULE_MARKETPLACE_API DownloadManager {
 public:
-    MarketManager(InviwoApplication*);
-    virtual ~MarketManager() = default;
+    DownloadManager();
+    virtual ~DownloadManager() = default;
 
-    std::optional<std::string> gitClone(const std::string&, const std::string&);
-    std::optional<std::filesystem::path> getMarketDir() const;
-
-    // Source Market
-    void updateModuleSrcData();
-    int cloneModule(const ModuleSrcData&);
-    int updateModule(const ModuleSrcData&);
-    int cmakeConfigure(const ModuleSrcData&);
-    const std::vector<ModuleSrcData> getSrcModules() const;
-
-    // Binary Market
-    void updateModuleBinData();
-    int downloadBinaryModule(const ModuleBinData&);
-    void tryLoadModule(const ModuleBinData&);
-    const std::vector<ModuleBinData> getBinModules() const;
+    void download(const std::string& url, const std::string& filePath);
+    void onDownloadFinished(QNetworkReply*);
 
 private:
-    InviwoApplication* app_;
-    DownloadManager dlManager_;
-    std::filesystem::path inviwoSourcePath_;
-    std::string repositoryUrl_;
-    std::vector<ModuleSrcData> srcModules_;
-    std::vector<ModuleBinData> binModules_;
+    std::unique_ptr<QNetworkAccessManager> manager_;
+    std::vector<std::pair<const std::string, QNetworkReply*>> downloads_;
 };
 
 }  // namespace inviwo

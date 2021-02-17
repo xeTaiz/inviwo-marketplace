@@ -26,66 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************************/
-#pragma once
 
-#include <inviwo/marketplace/marketplacemoduledefine.h>
 #include <inviwo/marketplace/downloadmanager.h>
-#include <inviwo/core/common/inviwoapplication.h>
+#include <inviwo/core/util/logcentral.h>
 
-#include <string>
-#include <optional>
-#include <vector>
-#include <filesystem>
-#include <unordered_map>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QObject>
+#include <QString>
+#include <QFile>
+#include <QUrl>
 
 namespace inviwo {
 
+DownloadManager::DownloadManager()
+    : manager_(std::make_unique<QNetworkAccessManager>())
+    {
+        QObject::connect(manager_.get(), &QNetworkAccessManager::finished, [this] (QNetworkReply* r) { onDownloadFinished(r); });
+}
 
-struct ModuleSrcData {
-    std::string url;
-    std::string name;
-    std::optional<std::filesystem::path> path;
-};
+void DownloadManager::download(const std::string& url, const std::string& filePath) {
+    QNetworkRequest request (QUrl(QString::fromStdString(url)));
 
-// This is a duplicate, but they may be different at some point...
-struct ModuleBinData {
-    std::string url;
-    std::string name;
-    std::optional<std::filesystem::path> path;
-};
+    downloads_.push_back({filePath, manager_->get(request)});
+}
 
-/**
- * \brief Handles Marketplace Modules
- * Provides functions to update available modules, downloading, building and loading
- */
-class IVW_MODULE_MARKETPLACE_API MarketManager {
-public:
-    MarketManager(InviwoApplication*);
-    virtual ~MarketManager() = default;
-
-    std::optional<std::string> gitClone(const std::string&, const std::string&);
-    std::optional<std::filesystem::path> getMarketDir() const;
-
-    // Source Market
-    void updateModuleSrcData();
-    int cloneModule(const ModuleSrcData&);
-    int updateModule(const ModuleSrcData&);
-    int cmakeConfigure(const ModuleSrcData&);
-    const std::vector<ModuleSrcData> getSrcModules() const;
-
-    // Binary Market
-    void updateModuleBinData();
-    int downloadBinaryModule(const ModuleBinData&);
-    void tryLoadModule(const ModuleBinData&);
-    const std::vector<ModuleBinData> getBinModules() const;
-
-private:
-    InviwoApplication* app_;
-    DownloadManager dlManager_;
-    std::filesystem::path inviwoSourcePath_;
-    std::string repositoryUrl_;
-    std::vector<ModuleSrcData> srcModules_;
-    std::vector<ModuleBinData> binModules_;
-};
+void DownloadManager::onDownloadFinished(QNetworkReply* reply) {
+    auto download = std::find_if(downloads_.begin(), downloads_.end(), [reply](std::pair<const std::string, QNetworkReply*>& pair){
+        return pair.second == reply;
+    });
+    if (download != downloads_.end()) {
+        LogInfo("NetworkReply finished: " << download->second->isFinished());
+        QFile file(QString::fromStdString(download->first));
+        if(file.open(QIODevice::WriteOnly)){
+            file.write(reply->readAll());
+            LogInfo("wrote file " << download->first);
+            file.close();
+        }
+        download->second->deleteLater();
+        // downloads_.erase(download);
+    } else {
+        LogInfo("A download finished that is not registered in the DownloadManager");
+    }
+}
 
 }  // namespace inviwo
