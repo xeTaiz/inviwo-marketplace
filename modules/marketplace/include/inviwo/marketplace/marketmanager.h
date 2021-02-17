@@ -63,24 +63,24 @@ public:
     virtual ~MarketManager() = default;
 
     std::optional<std::string> gitClone(const std::string&, const std::string&);
+    std::optional<std::filesystem::path> getMarketDir() const;
 
-    // Source Market
-    void updateModuleSrcData();
-    int cloneModule(const ModuleSrcData&);
-    int updateModule(const ModuleSrcData&);
-    int cmakeConfigure(const ModuleSrcData&);
-    const std::vector<ModuleSrcData> getSrcModules() const;
+        // Source Market
+        void updateModuleSrcData();
+        int cloneModule(const ModuleSrcData&);
+        int updateModule(const ModuleSrcData&);
+        int cmakeConfigure(const ModuleSrcData&);
+        const std::vector<ModuleSrcData> getSrcModules() const;
 
-    // Binary Market
-    void updateModuleBinData();
-    int downloadBinaryModule(const ModuleBinData&);
-    void tryLoadModule(const ModuleBinData&);
-    const std::vector<ModuleBinData> getBinModules() const;
+        // Binary Market
+        void updateModuleBinData();
+        int downloadBinaryModule(const ModuleBinData&);
+        void tryLoadModule(const ModuleBinData&);
+        const std::vector<ModuleBinData> getBinModules() const;
 
     private:
         InviwoApplication* app_;
         std::filesystem::path inviwoSourcePath_;
-        std::filesystem::path externalModulesPath_;
         std::string repositoryUrl_;
         std::vector<ModuleSrcData> srcModules_;
         std::vector<ModuleBinData> binModules_;

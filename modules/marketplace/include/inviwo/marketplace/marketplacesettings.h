@@ -29,7 +29,6 @@
 #pragma once
 
 #include <inviwo/marketplace/marketplacemoduledefine.h>
-#include <inviwo/marketplace/marketmanager.h>
 #include <inviwo/core/util/settings/settings.h>
 #include <inviwo/core/properties/fileproperty.h>
 #include <inviwo/core/properties/directoryproperty.h>
@@ -42,15 +41,14 @@ namespace inviwo {
  */
 class IVW_MODULE_MARKETPLACE_API MarketplaceSettings : public Settings {
 public:
-    MarketplaceSettings(InviwoApplication* app, std::shared_ptr<MarketManager> manager);
+    MarketplaceSettings(InviwoApplication* app);
     virtual ~MarketplaceSettings() = default;
 
     FileProperty cmakeExec_;
     FileProperty gitExec_;
     DirectoryProperty buildDir_;
+    DirectoryProperty marketDir_;
 
-private:
-    std::shared_ptr<MarketManager> manager_;
 };
 
 }  // namespace inviwo
