@@ -43,9 +43,10 @@
 
 namespace inviwo {
 
-MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager)
+MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager, InviwoApplication* app)
     : InviwoDockWidget(utilqt::toQString(widgetName), parent, "ModulesMarketplace")
     , manager_(manager)
+    , app_(app)
     {
     auto mainWidget = new QScrollArea(this);
     this->setContents(mainWidget);
@@ -81,28 +82,28 @@ MarketplaceWidgetQt::MarketplaceWidgetQt(const std::string& widgetName, QWidget*
     binMarket->setLayout(binVL);
     tabWidget->setStyleSheet("QTabBar::tab { height: 2em; width: 15em; font-size:12pt; }");
     tabWidget->addTab(binMarket, QString("Installable Modules"));
-    tabWidget->addTab(srcMarket, QString("Source Code"));
+    if (app_->getApplicationUsageMode() == UsageMode::Development) { // Developer Usage Mode
+        tabWidget->addTab(srcMarket, QString("Source Code"));
+        //      SOURCE   TAB
+        auto refreshSrc = new QPushButton(QString("Refresh"), srcMarket);
+        connect(refreshSrc, &QPushButton::released, this,
+            [this, srcVL, srcMarket] () {
+                manager_->updateModuleSrcData();
 
+                for (auto w : moduleSrcWidgets_) {
+                    srcVL->removeWidget(w);
+                }
+                moduleSrcWidgets_.clear();
 
-    //      SOURCE   TAB
-    auto refreshSrc = new QPushButton(QString("Refresh"), srcMarket);
-    connect(refreshSrc, &QPushButton::released, this,
-        [this, srcVL, srcMarket] () {
-            manager_->updateModuleSrcData();
-
-            for (auto w : moduleSrcWidgets_) {
-                srcVL->removeWidget(w);
-            }
-            moduleSrcWidgets_.clear();
-
-            // Add all module widgets
-            for (const auto data : manager_->getSrcModules()) {
-                auto w = new MarketSrcModuleWidgetQt(data, srcMarket, manager_);
-                moduleSrcWidgets_.push_back(w);
-                srcVL->addWidget(w);
-            }
-        });
-    srcVL->addWidget(refreshSrc);
+                // Add all module widgets
+                for (const auto data : manager_->getSrcModules()) {
+                    auto w = new MarketSrcModuleWidgetQt(data, srcMarket, manager_);
+                    moduleSrcWidgets_.push_back(w);
+                    srcVL->addWidget(w);
+                }
+            });
+        srcVL->addWidget(refreshSrc);
+    }
 
 
     //      BINARY   TAB

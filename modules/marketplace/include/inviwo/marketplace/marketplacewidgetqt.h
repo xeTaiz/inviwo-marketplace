@@ -29,6 +29,7 @@
 #pragma once
 
 #include <inviwo/core/common/inviwo.h>
+#include <inviwo/core/common/inviwoapplication.h>
 #include <inviwo/marketplace/marketplacemoduledefine.h>
 #include <inviwo/marketplace/marketsrcmodulewidgetqt.h>
 #include <inviwo/marketplace/marketbinmodulewidgetqt.h>
@@ -51,7 +52,7 @@ namespace inviwo {
  */
 class IVW_MODULE_MARKETPLACE_API MarketplaceWidgetQt : public InviwoDockWidget {
 public:
-    MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager);
+    MarketplaceWidgetQt(const std::string& widgetName, QWidget* parent, std::shared_ptr<MarketManager> manager, InviwoApplication* app);
     virtual ~MarketplaceWidgetQt() = default;
     MarketplaceWidgetQt(const MarketplaceWidgetQt&) = delete;
     MarketplaceWidgetQt& operator=(const MarketplaceWidgetQt&) = delete;
@@ -59,6 +60,7 @@ public:
 protected:
 
 private:
+    InviwoApplication* app_;
     std::shared_ptr<MarketManager> manager_;
 
     std::vector<MarketSrcModuleWidgetQt*> moduleSrcWidgets_;

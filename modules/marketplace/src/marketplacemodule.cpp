@@ -81,10 +81,10 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
         {
             auto action = menu->addAction("Modules Marketplace");
             action->setCheckable(true);
-            win->connect(action, &QAction::triggered, [this, win]() {
+            win->connect(action, &QAction::triggered, [this, win, app]() {
                 if (!editor_) {  // Setup Widget
                     editor_ =
-                        std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, manager_);
+                        std::make_unique<MarketplaceWidgetQt>("Modules Marketplace", win, manager_, app);
                     win->addDockWidget(Qt::BottomDockWidgetArea, editor_.get());
                     editor_->hide();
                     editor_->loadState();
