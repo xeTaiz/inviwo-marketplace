@@ -28,17 +28,19 @@
  *********************************************************************************/
 
 #include <inviwo/marketplace/marketplacesettings.h>
+#include <inviwo/core/util/filesystem.h>
 
 namespace inviwo {
 
-MarketplaceSettings::MarketplaceSettings(InviwoApplication* app, std::shared_ptr<MarketManager> manager)
+MarketplaceSettings::MarketplaceSettings(InviwoApplication* app)
     : Settings("Marketplace Settings", app)
-    , manager_(manager)
     , gitExec_("gitExec", "Git Executable", "")
     , cmakeExec_("cmakeExec", "CMake Executable", "")
-    , buildDir_("buildDir", "Build Directory", "") {
+    , buildDir_("buildDir", "Build Directory", "")
+    , marketDir_("marketDir", "Marketplace Directory", filesystem::getInviwoUserSettingsPath() + "/marketplace")
+    {
 
-    addProperties(gitExec_, cmakeExec_, buildDir_);
+    addProperties(marketDir_, gitExec_, cmakeExec_, buildDir_);
 }
 
 }  // namespace inviwo

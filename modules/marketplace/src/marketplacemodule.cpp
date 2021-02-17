@@ -52,11 +52,11 @@ MarketplaceModule::MarketplaceModule(InviwoApplication* app) : InviwoModule(app,
 
     // Processors
     registerProcessor<Marketplace>();
+    auto settings = std::make_unique<MarketplaceSettings>(app);
+    registerSettings(std::move(settings));
     // registerProcessor<MarketplaceProcessor>();
 
-    manager_ = std::make_shared<MarketManager>(app);
-    auto settings = std::make_unique<MarketplaceSettings>(app, manager_);
-    registerSettings(std::move(settings));
+    manager_ = std::make_shared<MarketManager>(app);  // Must be after MarketplaceSettings !!
     // registerMetaData(std::make_unique<MarketplaceMetaData>());
     // registerPortInspector("MarketplaceOutport", "path/workspace.inv");
     // registerProcessorWidget(std::string processorClassName, std::unique_ptr<ProcessorWidget> processorWidget);

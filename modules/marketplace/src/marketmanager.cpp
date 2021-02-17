@@ -68,14 +68,22 @@ std::optional<std::string> getModuleName(const std::filesystem::path& path) {
 MarketManager::MarketManager(InviwoApplication* app)
     : app_(app)
     , repositoryUrl_("https://github.com/mstegmaier/inviwo-marketplace")
-    , externalModulesPath_(std::filesystem::path(inviwo::filesystem::getInviwoUserSettingsPath()) / "marketplace")
-    , inviwoSourcePath_(app->getBasePath())
     {
-        LogInfo("Executable: " + inviwo::filesystem::getExecutablePath());
-        LogInfo("WorkingDir: " + inviwo::filesystem::getWorkingDirectory());
-        if (!std::filesystem::exists(externalModulesPath_)){
-            std::filesystem::create_directory(externalModulesPath_);
+    inviwoSourcePath_ = app_->getBasePath();
+
+}
+
+std::optional<std::filesystem::path> MarketManager::getMarketDir() const {
+    auto settings = app_->getSettingsByType<MarketplaceSettings>();
+    if (settings) {
+        auto marketPath =  std::filesystem::path(settings->marketDir_.get());
+        if (!std::filesystem::exists(marketPath)) {
+            std::filesystem::create_directory(marketPath);
         }
+        return marketPath;
+    } else {
+        return std::nullopt;
+    }
 }
 
 std::optional<std::string> MarketManager::gitClone(const std::string& url,
@@ -132,16 +140,21 @@ std::optional<std::string> MarketManager::gitClone(const std::string& url,
 }
 
 void MarketManager::updateModuleSrcData() {
-    // Get inviwo-marketplace if not in externalModulesPath_
-    if (!std::filesystem::exists(externalModulesPath_ / "inviwo-marketplace")) {
-        const auto dir_name_ = gitClone(repositoryUrl_, externalModulesPath_.string());
+    auto marketPath = getMarketDir();
+    if (!marketPath) {
+        LogInfo("No valid Marketplace Directory set. Navigate to View > Settings > Marketplace and provide a path for the Marketplace.");
+        return;
+    }
+    // Get inviwo-marketplace if not in marketPath
+    if (!std::filesystem::exists(*marketPath / "inviwo-marketplace")) {
+        const auto dir_name_ = gitClone(repositoryUrl_, marketPath->string());
         if (!dir_name_) {
             LogInfo("Unable to clone " + repositoryUrl_);
             return;
         }
     }
     // Read module URLs from inviwo-marketplace
-    const auto path = externalModulesPath_ / "inviwo-marketplace" / "modules.txt";
+    const auto path = *marketPath / "inviwo-marketplace" / "modules.txt";
     std::ifstream file;
     file.open(path.string(), std::ios::in);
     if (!file.is_open()) {
@@ -163,7 +176,7 @@ void MarketManager::updateModuleSrcData() {
             moduleName.erase(pos, 6);
         }
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
-        std::filesystem::path path (externalModulesPath_ / moduleName);
+        std::filesystem::path path (*marketPath / moduleName);
         if (std::filesystem::exists(path)) {
             srcModules_.push_back({url, moduleName, path});
         } else {
@@ -173,16 +186,23 @@ void MarketManager::updateModuleSrcData() {
 }
 
 void MarketManager::updateModuleBinData() {
-    // Get inviwo-marketplace if not in externalModulesPath_
-    if (!std::filesystem::exists(externalModulesPath_ / "inviwo-marketplace")) {
-        const auto dir_name_ = gitClone(repositoryUrl_, externalModulesPath_.string());
+    auto marketPath = getMarketDir();
+    if (!marketPath) {
+        LogInfo(
+            "No valid Marketplace Directory set. Navigate to View > Settings > Marketplace and "
+            "provide a path for the Marketplace.");
+        return;
+    }
+    // Get inviwo-marketplace if not in marketPath
+    if (!std::filesystem::exists(*marketPath / "inviwo-marketplace")) {
+        const auto dir_name_ = gitClone(repositoryUrl_, marketPath->string());
         if (!dir_name_) {
             LogInfo("Unable to clone " + repositoryUrl_);
             return;
         }
     }
     // Read module URLs from inviwo-marketplace
-    const auto path = externalModulesPath_ / "inviwo-marketplace" / "bin_modules.txt";
+    const auto path = *marketPath / "inviwo-marketplace" / "bin_modules.txt";
     std::ifstream file;
     file.open(path.string(), std::ios::in);
     if (!file.is_open()) {
@@ -205,9 +225,9 @@ void MarketManager::updateModuleBinData() {
         }
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
 #ifdef _WIN32
-        std::filesystem::path path(externalModulesPath_ / ("inviwo-module-" + moduleName + "module.dll"));
+        std::filesystem::path path(*marketPath / ("inviwo-module-" + moduleName + "module.dll"));
 #else
-        std::filesystem::path path(externalModulesPath_ / ("libinviwo-module-" + moduleName + "module.so"));
+        std::filesystem::path path(*marketPath / ("libinviwo-module-" + moduleName + "module.so"));
 #endif
         if (std::filesystem::exists(path)) {
             binModules_.push_back({url, moduleName, path});
@@ -225,13 +245,20 @@ const std::vector<ModuleBinData> MarketManager::getBinModules() const {
 }
 
 int MarketManager::cloneModule(const ModuleSrcData& data) {
-    const auto dir_name_ = gitClone(data.url, externalModulesPath_.make_preferred().string());
+    auto marketPath = getMarketDir();
+    if (!marketPath) {
+        LogInfo(
+            "No valid Marketplace Directory set. Navigate to View > Settings > Marketplace and "
+            "provide a path for the Marketplace.");
+        return 1;
+    }
+    const auto dir_name_ = gitClone(data.url, marketPath->make_preferred().string());
     if (!dir_name_) {
         LogInfo("Unable to clone " + data.url);
         return 1;
     }
     std::string dir_name = *dir_name_;
-    const auto module_name_ = getModuleName(externalModulesPath_ / dir_name / "CMakeLists.txt");
+    const auto module_name_ = getModuleName(*marketPath / dir_name / "CMakeLists.txt");
     if (!module_name_) {
         LogInfo("Could not parse module name of " + dir_name + "  (" + data.url + ")");
         return 1;
@@ -244,7 +271,7 @@ int MarketManager::cloneModule(const ModuleSrcData& data) {
 
     if (!name_ok) {
         LogInfo("Directory " + dir_name + " is wrongly named! Renaming to " + module_name);
-        std::filesystem::rename(externalModulesPath_ / dir_name, externalModulesPath_ / module_name);
+        std::filesystem::rename(*marketPath / dir_name, *marketPath / module_name);
         dir_name = module_name;
     }
 
@@ -296,6 +323,13 @@ int MarketManager::updateModule(const ModuleSrcData& data) {
 }
 
 int MarketManager::cmakeConfigure(const ModuleSrcData& data) {
+    auto marketPath = getMarketDir();
+    if (!marketPath) {
+        LogInfo(
+            "No valid Marketplace Directory set. Navigate to View > Settings > Marketplace and "
+            "provide a path for the Marketplace.");
+        return 1;
+    }
     QProcess process;
 
     auto cmakeExec = app_->getSettingsByType<MarketplaceSettings>()->cmakeExec_.get();
@@ -313,7 +347,7 @@ int MarketManager::cmakeConfigure(const ModuleSrcData& data) {
     std::transform(module_name.begin(), module_name.end(), module_name.begin(), ::toupper);
 
     const std::string def = "-DIVW_MODULE_" + module_name + ":BOOL=1";
-    const std::string emp = "-DIVW_EXTERNAL_MODULES=" + externalModulesPath_.string();
+    const std::string emp = "-DIVW_EXTERNAL_MODULES=" + marketPath->string();
 
     QStringList arguments;
     arguments << QString::fromStdString(inviwoSourcePath_.string())
