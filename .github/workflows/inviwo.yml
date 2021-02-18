@@ -116,7 +116,7 @@ jobs:
       run: >
         cmake -S inviwo -B build -G '${{ matrix.generator }}'
         -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
-        -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+        -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
         -DIVW_CFG_CMAKE_DEBUG=ON
         -DIVW_CFG_PRECOMPILED_HEADERS=OFF
