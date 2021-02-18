@@ -47,6 +47,7 @@ jobs:
         git fetch --all
         git reset --hard $IVW_VCPKG_SHA
         ./bootstrap-vcpkg.sh
+        ls
 
     - name: 'Setup NuGet Credentials'
       shell: bash
@@ -113,8 +114,9 @@ jobs:
 
     - name: Configure CMake
       shell: bash
-      run: >
+      run: |
         pwd
+        ls vcpkg
         cmake -S inviwo -B build -G '${{ matrix.generator }}'
         -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
         -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
