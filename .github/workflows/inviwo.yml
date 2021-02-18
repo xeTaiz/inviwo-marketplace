@@ -79,7 +79,7 @@ jobs:
       run: |
         Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
         scoop bucket add extras
-        scoop install nsis
+        scoop install nsis doxygen latex
         echo "~/scoop/shims" >> $GITHUB_PATH
         echo "$(Split-Path -Path (Get-Command dvips).Path -Parent)" >> $GITHUB_PATH
 
