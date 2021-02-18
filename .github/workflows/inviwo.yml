@@ -79,7 +79,7 @@ jobs:
       run: |
         Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
         scoop bucket add extras
-        scoop install nsis doxygen latex
+        scoop install nsis
         echo "~/scoop/shims" >> $GITHUB_PATH
         echo "$(Split-Path -Path (Get-Command dvips).Path -Parent)" >> $GITHUB_PATH
 
@@ -114,6 +114,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: >
+        pwd
         cmake -S inviwo -B build -G '${{ matrix.generator }}'
         -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
         -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
