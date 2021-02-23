@@ -173,8 +173,8 @@ jobs:
     #       build/modules/${{ env.MODULE_NAME}}/
 
     - name: Zip Module DLL & Assets
-        id: zip_module
-        run: zip {{ env.MODULE_NAME }}.zip build/bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll build/modules/${{ env.MODULE_NAME }}/*
+      id: zip_module
+      run: zip {{ env.MODULE_NAME }}.zip build/bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll build/modules/${{ env.MODULE_NAME }}/*
 
     - name: Release Module Artifact
       id: create_release
