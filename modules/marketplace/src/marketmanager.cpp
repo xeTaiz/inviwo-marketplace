@@ -230,6 +230,14 @@ void MarketManager::updateModuleBinData() {
         if (pos != std::string::npos) {
             moduleName.erase(pos, 6);
         }
+        pos = moduleName.find("module");
+        if (pos != std::string::npos) {
+            moduleName.erase(pos, 6);
+        }
+        pos = moduleName.find(".zip");
+        if (pos != std::string::npos) {
+            moduleName.erase(pos, 4);
+        }
         moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
 #ifdef _WIN32
         std::filesystem::path path(*marketPath / moduleName / ("inviwo-module-" + moduleName + "module.dll"));
@@ -406,9 +414,7 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
     }
 
     auto zipPath = moduleDir / (data.name + ".zip");
-    dlManager_.download(
-        "https://github.com/xeTaiz/inviwo-marketplace/releases/download/refs/heads/master/markettestmodule.zip",
-        zipPath.string());
+    dlManager_.download(data.url, zipPath.string());
 
     // QNetworkAccessManager nm;
     // QObject::connect(
