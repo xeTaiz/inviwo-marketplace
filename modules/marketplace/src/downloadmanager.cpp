@@ -83,8 +83,4 @@ void DownloadManager::onErrorOccured(QNetworkReply::NetworkError code) {
     LogInfo("Error Code: " << code);
 }
 
-void DownloadManager::onRedirect(const QUrl url) {
-
-}
-
 }  // namespace inviwo

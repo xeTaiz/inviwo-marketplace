@@ -54,7 +54,6 @@ public:
     void download(const std::string& url, const std::string& filePath);
     void onDownloadFinished(QNetworkReply*);
     void onErrorOccured(QNetworkReply::NetworkError);
-    void onRedirect(const QUrl);
 private:
     std::unique_ptr<QNetworkAccessManager> manager_;
     std::vector<std::pair<const std::string, QNetworkReply*>> downloads_;
