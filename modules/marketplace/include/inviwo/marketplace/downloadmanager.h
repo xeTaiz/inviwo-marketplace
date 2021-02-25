@@ -34,8 +34,10 @@
 #include <vector>
 
 #include <QNetworkAccessManager>
+#include <QObject>
+#include <QNetworkReply>
+#include <QUrl>
 
-class QNetworkReply;
 
 namespace inviwo {
 
@@ -43,14 +45,16 @@ namespace inviwo {
  * \brief VERY_BRIEFLY_DESCRIBE_THE_CLASS
  * DESCRIBE_THE_CLASS_FROM_A_DEVELOPER_PERSPECTIVE
  */
-class IVW_MODULE_MARKETPLACE_API DownloadManager {
+class IVW_MODULE_MARKETPLACE_API DownloadManager : public QObject{
+    Q_OBJECT
 public:
     DownloadManager();
     virtual ~DownloadManager() = default;
 
     void download(const std::string& url, const std::string& filePath);
     void onDownloadFinished(QNetworkReply*);
-
+    void onErrorOccured(QNetworkReply::NetworkError);
+    void onRedirect(const QUrl);
 private:
     std::unique_ptr<QNetworkAccessManager> manager_;
     std::vector<std::pair<const std::string, QNetworkReply*>> downloads_;
