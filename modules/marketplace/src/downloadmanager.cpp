@@ -36,19 +36,26 @@
 #include <QString>
 #include <QFile>
 #include <QUrl>
+#include <QVariant>
 
 namespace inviwo {
 
 DownloadManager::DownloadManager()
-    : manager_(std::make_unique<QNetworkAccessManager>())
+    : QObject()
+    , manager_(std::make_unique<QNetworkAccessManager>())
     {
-        QObject::connect(manager_.get(), &QNetworkAccessManager::finished, [this] (QNetworkReply* r) { onDownloadFinished(r); });
+        // manager_->setRedirectPolicy(QNetworkRequest::UserVerifiedRedirectPolicy);
+        QObject::connect(manager_.get(), &QNetworkAccessManager::finished, this, &DownloadManager::onDownloadFinished);
 }
 
 void DownloadManager::download(const std::string& url, const std::string& filePath) {
     QNetworkRequest request (QUrl(QString::fromStdString(url)));
-
-    downloads_.push_back({filePath, manager_->get(request)});
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
+        // request.setMaximumRedirectsAllowed(1);
+    QNetworkReply* reply = manager_->get(request);
+    // connect(reply, &QNetworkReply::redirected, )
+    // connect(reply, &QNetworkReply::finished, this, &DownloadManager::onDownloadFinished);
+    downloads_.push_back({ filePath, reply });
 }
 
 void DownloadManager::onDownloadFinished(QNetworkReply* reply) {
@@ -56,11 +63,13 @@ void DownloadManager::onDownloadFinished(QNetworkReply* reply) {
         return pair.second == reply;
     });
     if (download != downloads_.end()) {
+        // QVariant possibleRedirectUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
         LogInfo("NetworkReply finished: " << download->second->isFinished());
         QFile file(QString::fromStdString(download->first));
         if(file.open(QIODevice::WriteOnly)){
-            file.write(reply->readAll());
-            LogInfo("wrote file " << download->first);
+            auto bytesWritten = file.write(reply->readAll());
+            LogInfo("wrote " << bytesWritten << " bytes to file " << download->first);
+            file.flush();
             file.close();
         }
         download->second->deleteLater();
@@ -68,6 +77,14 @@ void DownloadManager::onDownloadFinished(QNetworkReply* reply) {
     } else {
         LogInfo("A download finished that is not registered in the DownloadManager");
     }
+}
+
+void DownloadManager::onErrorOccured(QNetworkReply::NetworkError code) {
+    LogInfo("Error Code: " << code);
+}
+
+void DownloadManager::onRedirect(const QUrl url) {
+
 }
 
 }  // namespace inviwo
