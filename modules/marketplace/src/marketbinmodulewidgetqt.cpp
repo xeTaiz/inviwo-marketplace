@@ -86,7 +86,6 @@ MarketBinModuleWidgetQt::MarketBinModuleWidgetQt(const ModuleBinData& data, QWid
             [this, data] () {
                 int code = manager_->downloadBinaryModule(data);
                 if (code == 0) {
-                    downloadBtn_->setEnabled(false);
                 }
                 manager_->updateModuleBinData();
             });

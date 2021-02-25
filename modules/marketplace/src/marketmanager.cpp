@@ -407,10 +407,8 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
 
     auto zipPath = moduleDir / (data.name + ".zip");
     dlManager_.download(
-        "https://nightly.link/xeTaiz/inviwo-marketplace/actions/artifacts/41536624.zip", zipPath.string());
-
-
-
+        "https://github.com/xeTaiz/inviwo-marketplace/releases/download/refs/heads/master/markettestmodule.zip",
+        zipPath.string());
 
     // QNetworkAccessManager nm;
     // QObject::connect(
