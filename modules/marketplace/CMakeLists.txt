@@ -35,12 +35,18 @@ set(SHADER_FILES
 )
 ivw_group("Shader Files" ${SHADER_FILES})
 
+set(MOC_FILES
+    include/inviwo/marketplace/downloadmanager.h
+)
+qt5_wrap_cpp(MOCED_FILES ${MOC_FILES})
+source_group("MOC Files" FILES ${MOCED_FILES})
+
 set(TEST_FILES
     tests/unittests/marketplace-unittest-main.cpp
 )
 ivw_add_unittest(${TEST_FILES})
 
-ivw_create_module(${SOURCE_FILES} ${HEADER_FILES} ${SHADER_FILES})
+ivw_create_module(${SOURCE_FILES} ${MOCED_FILES} ${HEADER_FILES} ${SHADER_FILES})
 target_link_libraries(inviwo-module-marketplace PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network)
 
 # Add shader directory to install package
