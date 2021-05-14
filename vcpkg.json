@@ -52,13 +52,10 @@
         { "name" : "libpng", "version" : "1.6.37" },
         { "name" : "minizip", "version" : "1.2.11" },
         { "name" : "nlohmann-json", "version" : "3.9.1" },
-        { "name" : "nifticlib", "version" : "2020-04-30" },
         { "name" : "openexr", "version" : "2.5.0" },
         { "name" : "pybind11", "version" : "2.6.0" },
-        { "name" : "tclap", "version" : "1.2.2-3" },
         { "name" : "tiff", "version" : "4.1.0" },
         { "name" : "tinydir", "version" : "1.2.4" },
-        { "name" : "tinyxml2", "version" : "8.0.0-1" },
         { "name" : "utfcpp", "version" : "3.1.2" },
         { "name" : "zlib", "version" : "1.2.11" }
     ]
