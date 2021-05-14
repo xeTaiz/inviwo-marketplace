@@ -45,6 +45,8 @@ jobs:
         git clone https://github.com/microsoft/vcpkg.git
         cd vcpkg
         git fetch --all
+        git reset --hard $IVW_VCPKG_SHA
+        git rev-parse HEAD
         ./bootstrap-vcpkg.sh
 
     - name: 'Setup NuGet Credentials'
