@@ -1,7 +1,7 @@
 {
     "name": "inviwo",
     "version-string" : "0.9.11.1",
-    "builtin-baseline" : "66bac12e4e54cc858bdf7f93c5786010b6812b13",
+    "builtin-baseline" : "e6dcc079c81161786eb7b052209a2047e79f2c6c",
     "homepage" : "https://github.com/inviwo/inviwo",
     "license": "BSD-2-Clause",
     "dependencies" : [
