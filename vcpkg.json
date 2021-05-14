@@ -1,6 +1,7 @@
 {
     "name": "inviwo",
     "version-string" : "0.9.11.1",
+    "builtin-baseline" : "66bac12e4e54cc858bdf7f93c5786010b6812b13",
     "homepage" : "https://github.com/inviwo/inviwo",
     "license": "BSD-2-Clause",
     "dependencies" : [
@@ -31,6 +32,35 @@
         "tinyxml2",
         "utfcpp",
         "zlib"
+    ],
+    "overrides" : [
+        { "name" : "assimp", "version" : "5.0.1" },
+        { "name" : "benchmark", "version" : "1.5.2" },
+        { "name" : "cimg", "version" : "2.9.4" },
+        { "name" : "eigen3", "version" : "3.3.9" },
+        { "name" : "fmt", "version" : "7.1.3" },
+        { "name" : "freetype", "version" : "2.10.2" },
+        { "name" : "glew", "version" : "2.1.0" },
+        { "name" : "glfw3", "version" : "3.3.2" },
+        { "name" : "glm", "version" : "0.9.9.8" },
+        { "name" : "gtest", "version" : "1.10.0" },
+        {
+            "name": "hdf5",
+            "version": "1.12.0"
+        },
+        { "name" : "libjpeg-turbo", "version" : "2.0.5" },
+        { "name" : "libpng", "version" : "1.6.37" },
+        { "name" : "minizip", "version" : "1.2.11" },
+        { "name" : "nlohmann-json", "version" : "3.9.1" },
+        { "name" : "nifticlib", "version" : "2020-04-30" },
+        { "name" : "openexr", "version" : "2.5.0" },
+        { "name" : "pybind11", "version" : "2.6.0" },
+        { "name" : "tclap", "version" : "1.2.2-3" },
+        { "name" : "tiff", "version" : "4.1.0" },
+        { "name" : "tinydir", "version" : "1.2.4" },
+        { "name" : "tinyxml2", "version" : "8.0.0-1" },
+        { "name" : "utfcpp", "version" : "3.1.2" },
+        { "name" : "zlib", "version" : "1.2.11" }
     ]
 }   
 
