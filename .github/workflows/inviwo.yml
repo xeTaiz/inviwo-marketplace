@@ -127,8 +127,9 @@ jobs:
         cmakeListsTxtPath: '${{ github.workspace }}/inviwo/CMakeLists.txt'
         buildDirectory: 'build'
         # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
+        useVcpkgToolchainFile: true
         cmakeAppendedArgs: >
-          -S inviwo -B build -G '${{ matrix.generator }}'
+          -S inviwo -B build
           -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
           -DCMAKE_TOOLCHAIN_FILE=$(pwd)/vcpkg/scripts/buildsystems/vcpkg.cmake
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
@@ -168,7 +169,6 @@ jobs:
           -DIVW_USE_EXTERNAL_PYBIND11=ON
           -DIVW_USE_EXTERNAL_OPENEXR=ON
           ${{ matrix.cmake }}
-        useVcpkgToolchainFile: true
         buildWithCMake: true
 
 #     - name: Configure CMake
