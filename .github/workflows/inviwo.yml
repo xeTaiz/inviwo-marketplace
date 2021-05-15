@@ -38,6 +38,9 @@ jobs:
     timeout-minutes: 360
     
     steps:
+    # Install latest CMake.
+    - uses: lukka/get-cmake@latest
+    
     # Restore from cache the previously built ports. If a "cache miss" occurs, then vcpkg is bootstrapped. Since a the vcpkg.json is being used later on to install the packages when run-cmake runs, no packages are installed at this time and the input 'setupOnly:true' is mandatory.
     - name: 'Restore artifacts, or setup vcpkg (do not install any package)'
       uses: lukka/run-vcpkg@v6
