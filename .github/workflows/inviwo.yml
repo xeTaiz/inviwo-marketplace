@@ -130,6 +130,9 @@ jobs:
         useVcpkgToolchainFile: true
         cmakeAppendedArgs: >
           -S inviwo -B build
+          -Wdev
+          --debug-output
+          --trace
           -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
           -DIVW_CFG_CMAKE_DEBUG=ON
@@ -214,11 +217,13 @@ jobs:
 #         -DIVW_USE_EXTERNAL_OPENEXR=ON
 #         ${{ matrix.cmake }}
 
-    - name: VCPKG Error Artifact
+    - name: CMake Error Artifact
       uses: actions/upload-artifact@v2
       with:
         name: vcpkg-error
-        path: build\vcpkg-manifest-install.log
+        path: |
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
       if: ${{ failure() }}
       
     - name: Setup C++
