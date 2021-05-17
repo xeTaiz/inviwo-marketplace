@@ -129,7 +129,7 @@ jobs:
         # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
         useVcpkgToolchainFile: true
         cmakeAppendedArgs: >
-          -S inviwo -B build
+          -S inviwo
           -Wdev
           --debug-output
           -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
