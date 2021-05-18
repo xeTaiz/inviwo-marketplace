@@ -217,10 +217,11 @@ jobs:
     - name: CMake Error Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: cmake-error
+        name: error-logs
         path: |
           build/CMakeFiles/CMakeOutput.log
           build/CMakeFiles/CMakeError.log
+          build/vcpkg-manifest-install.log
       if: ${{ failure() }}
       
     - name: Setup C++
