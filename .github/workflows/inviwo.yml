@@ -130,8 +130,6 @@ jobs:
         useVcpkgToolchainFile: true
         cmakeAppendedArgs: >
           -S inviwo
-          -Wdev
-          --debug-output
           -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
           -DIVW_CFG_CMAKE_DEBUG=ON
