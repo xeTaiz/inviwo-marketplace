@@ -29,6 +29,7 @@
 
 # Retrive the git sha of the VCPKG installation, once for later use in ivw_vcpkg_install
 if(VCPKG_TOOLCHAIN)
+    message(${_VCPKG_ROOT_DIR})
     ivw_git_get_hash(${_VCPKG_ROOT_DIR} ivw_vcpkg_sha)
 endif()
 
