@@ -120,99 +120,99 @@ jobs:
         path: inviwo
         submodules: recursive
         
-    - name: Run CMake to install the dependencies specified in the vcpkg.json manifest, generate project file and build the project
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeListsTxtPath: '${{ github.workspace }}/inviwo/CMakeLists.txt'
-        buildDirectory: 'build'
-        # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
-        useVcpkgToolchainFile: true
-        cmakeAppendedArgs: >
-          -S inviwo
-          -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
-          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-          -DIVW_CFG_CMAKE_DEBUG=ON
-          -DIVW_CFG_PRECOMPILED_HEADERS=OFF
-          -DIVW_CFG_FORCE_ASSERTIONS=ON
-          -DIVW_DOXYGEN_PROJECT=ON
-          -DIVW_PACKAGE_INSTALLER=ON
-          -DIVW_TEST_UNIT_TESTS_RUN_ON_BUILD=OFF
-          -DIVW_TEST_BENCHMARKS=OFF
-          -DIVW_TEST_INTEGRATION_TESTS=ON
-          -DIVW_USE_OPENMP=OFF
-          -DIVW_USE_OPENEXR=OFF
-          -DIVW_MODULE_CIMG=ON
-          -DIVW_MODULE_PYTHON3=OFF
-          -DIVW_MODULE_PYTHON3QT=OFF
-          -DIVW_MODULE_DATAFRAMEPYTHON=OFF
-          -DIVW_PACKAGE_EMBED_PYTHON=OFF
-          -DIVW_APP_PYTHON=OFF
-          -DIVW_MODULE_MARKETTESTMODULE=ON
-          -DIVW_USE_EXTERNAL_ASSIMP=ON
-          -DIVW_USE_EXTERNAL_BENCHMARK=ON
-          -DIVW_USE_EXTERNAL_EIGEN=ON
-          -DIVW_USE_EXTERNAL_FMT=ON
-          -DIVW_USE_EXTERNAL_FREETYPE=ON
-          -DIVW_USE_EXTERNAL_GLFW=ON
-          -DIVW_USE_EXTERNAL_GLM=ON
-          -DIVW_USE_EXTERNAL_GTEST=ON
-          -DIVW_USE_EXTERNAL_HDF5=ON
-          -DIVW_USE_EXTERNAL_IMG=ON
-          -DIVW_USE_EXTERNAL_JSON=ON
-          -DIVW_USE_EXTERNAL_CIMG=ON
-          -DIVW_USE_EXTERNAL_GLEW=ON
-          -DIVW_USE_EXTERNAL_TCLAP=ON
-          -DIVW_USE_EXTERNAL_UTFCPP=ON
-          -DIVW_USE_EXTERNAL_TINYDIR=ON
-          -DIVW_USE_EXTERNAL_PYBIND11=ON
-          -DIVW_USE_EXTERNAL_OPENEXR=ON
-          ${{ matrix.cmake }}
-        buildWithCMake: false
+#     - name: Run CMake to install the dependencies specified in the vcpkg.json manifest and generate project file
+#       uses: lukka/run-cmake@v3
+#       with:
+#         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+#         cmakeListsTxtPath: '${{ github.workspace }}/inviwo/CMakeLists.txt'
+#         buildDirectory: 'build'
+#         # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
+#         useVcpkgToolchainFile: true
+#         cmakeAppendedArgs: >
+#           -S inviwo
+#           -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
+#           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+#           -DIVW_CFG_CMAKE_DEBUG=ON
+#           -DIVW_CFG_PRECOMPILED_HEADERS=OFF
+#           -DIVW_CFG_FORCE_ASSERTIONS=ON
+#           -DIVW_DOXYGEN_PROJECT=ON
+#           -DIVW_PACKAGE_INSTALLER=ON
+#           -DIVW_TEST_UNIT_TESTS_RUN_ON_BUILD=OFF
+#           -DIVW_TEST_BENCHMARKS=OFF
+#           -DIVW_TEST_INTEGRATION_TESTS=ON
+#           -DIVW_USE_OPENMP=OFF
+#           -DIVW_USE_OPENEXR=OFF
+#           -DIVW_MODULE_CIMG=ON
+#           -DIVW_MODULE_PYTHON3=OFF
+#           -DIVW_MODULE_PYTHON3QT=OFF
+#           -DIVW_MODULE_DATAFRAMEPYTHON=OFF
+#           -DIVW_PACKAGE_EMBED_PYTHON=OFF
+#           -DIVW_APP_PYTHON=OFF
+#           -DIVW_MODULE_MARKETTESTMODULE=ON
+#           -DIVW_USE_EXTERNAL_ASSIMP=ON
+#           -DIVW_USE_EXTERNAL_BENCHMARK=ON
+#           -DIVW_USE_EXTERNAL_EIGEN=ON
+#           -DIVW_USE_EXTERNAL_FMT=ON
+#           -DIVW_USE_EXTERNAL_FREETYPE=ON
+#           -DIVW_USE_EXTERNAL_GLFW=ON
+#           -DIVW_USE_EXTERNAL_GLM=ON
+#           -DIVW_USE_EXTERNAL_GTEST=ON
+#           -DIVW_USE_EXTERNAL_HDF5=ON
+#           -DIVW_USE_EXTERNAL_IMG=ON
+#           -DIVW_USE_EXTERNAL_JSON=ON
+#           -DIVW_USE_EXTERNAL_CIMG=ON
+#           -DIVW_USE_EXTERNAL_GLEW=ON
+#           -DIVW_USE_EXTERNAL_TCLAP=ON
+#           -DIVW_USE_EXTERNAL_UTFCPP=ON
+#           -DIVW_USE_EXTERNAL_TINYDIR=ON
+#           -DIVW_USE_EXTERNAL_PYBIND11=ON
+#           -DIVW_USE_EXTERNAL_OPENEXR=ON
+#           ${{ matrix.cmake }}
+#         buildWithCMake: false
 
-#     - name: Configure CMake
-#       shell: bash
-#       run: >
-#         cmake -S inviwo -B build -G '${{ matrix.generator }}'
-#         -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
-#         -DCMAKE_TOOLCHAIN_FILE=$(pwd)/vcpkg/scripts/buildsystems/vcpkg.cmake
-#         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-#         -DIVW_CFG_CMAKE_DEBUG=ON
-#         -DIVW_CFG_PRECOMPILED_HEADERS=OFF
-#         -DIVW_CFG_FORCE_ASSERTIONS=ON
-#         -DIVW_DOXYGEN_PROJECT=ON
-#         -DIVW_PACKAGE_INSTALLER=ON
-#         -DIVW_TEST_UNIT_TESTS_RUN_ON_BUILD=OFF
-#         -DIVW_TEST_BENCHMARKS=OFF
-#         -DIVW_TEST_INTEGRATION_TESTS=ON
-#         -DIVW_USE_OPENMP=OFF
-#         -DIVW_USE_OPENEXR=OFF
-#         -DIVW_MODULE_CIMG=ON
-#         -DIVW_MODULE_PYTHON3=OFF
-#         -DIVW_MODULE_PYTHON3QT=OFF
-#         -DIVW_MODULE_DATAFRAMEPYTHON=OFF
-#         -DIVW_PACKAGE_EMBED_PYTHON=OFF
-#         -DIVW_APP_PYTHON=OFF
-#         -DIVW_MODULE_MARKETTESTMODULE=ON
-#         -DIVW_USE_EXTERNAL_ASSIMP=ON
-#         -DIVW_USE_EXTERNAL_BENCHMARK=ON
-#         -DIVW_USE_EXTERNAL_EIGEN=ON
-#         -DIVW_USE_EXTERNAL_FMT=ON
-#         -DIVW_USE_EXTERNAL_FREETYPE=ON
-#         -DIVW_USE_EXTERNAL_GLFW=ON
-#         -DIVW_USE_EXTERNAL_GLM=ON
-#         -DIVW_USE_EXTERNAL_GTEST=ON
-#         -DIVW_USE_EXTERNAL_HDF5=ON
-#         -DIVW_USE_EXTERNAL_IMG=ON
-#         -DIVW_USE_EXTERNAL_JSON=ON
-#         -DIVW_USE_EXTERNAL_CIMG=ON
-#         -DIVW_USE_EXTERNAL_GLEW=ON
-#         -DIVW_USE_EXTERNAL_TCLAP=ON
-#         -DIVW_USE_EXTERNAL_UTFCPP=ON
-#         -DIVW_USE_EXTERNAL_TINYDIR=ON
-#         -DIVW_USE_EXTERNAL_PYBIND11=ON
-#         -DIVW_USE_EXTERNAL_OPENEXR=ON
-#         ${{ matrix.cmake }}
+    - name: Configure CMake
+      shell: bash
+      run: >
+        cmake -S inviwo -B build -G '${{ matrix.generator }}'
+        -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
+        -DCMAKE_TOOLCHAIN_FILE=$(pwd)/vcpkg/scripts/buildsystems/vcpkg.cmake
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        -DIVW_CFG_CMAKE_DEBUG=ON
+        -DIVW_CFG_PRECOMPILED_HEADERS=OFF
+        -DIVW_CFG_FORCE_ASSERTIONS=ON
+        -DIVW_DOXYGEN_PROJECT=ON
+        -DIVW_PACKAGE_INSTALLER=ON
+        -DIVW_TEST_UNIT_TESTS_RUN_ON_BUILD=OFF
+        -DIVW_TEST_BENCHMARKS=OFF
+        -DIVW_TEST_INTEGRATION_TESTS=ON
+        -DIVW_USE_OPENMP=OFF
+        -DIVW_USE_OPENEXR=OFF
+        -DIVW_MODULE_CIMG=ON
+        -DIVW_MODULE_PYTHON3=OFF
+        -DIVW_MODULE_PYTHON3QT=OFF
+        -DIVW_MODULE_DATAFRAMEPYTHON=OFF
+        -DIVW_PACKAGE_EMBED_PYTHON=OFF
+        -DIVW_APP_PYTHON=OFF
+        -DIVW_MODULE_MARKETTESTMODULE=ON
+        -DIVW_USE_EXTERNAL_ASSIMP=ON
+        -DIVW_USE_EXTERNAL_BENCHMARK=ON
+        -DIVW_USE_EXTERNAL_EIGEN=ON
+        -DIVW_USE_EXTERNAL_FMT=ON
+        -DIVW_USE_EXTERNAL_FREETYPE=ON
+        -DIVW_USE_EXTERNAL_GLFW=ON
+        -DIVW_USE_EXTERNAL_GLM=ON
+        -DIVW_USE_EXTERNAL_GTEST=ON
+        -DIVW_USE_EXTERNAL_HDF5=ON
+        -DIVW_USE_EXTERNAL_IMG=ON
+        -DIVW_USE_EXTERNAL_JSON=ON
+        -DIVW_USE_EXTERNAL_CIMG=ON
+        -DIVW_USE_EXTERNAL_GLEW=ON
+        -DIVW_USE_EXTERNAL_TCLAP=ON
+        -DIVW_USE_EXTERNAL_UTFCPP=ON
+        -DIVW_USE_EXTERNAL_TINYDIR=ON
+        -DIVW_USE_EXTERNAL_PYBIND11=ON
+        -DIVW_USE_EXTERNAL_OPENEXR=ON
+        ${{ matrix.cmake }}
 
     - name: CMake Error Artifact
       uses: actions/upload-artifact@v2
