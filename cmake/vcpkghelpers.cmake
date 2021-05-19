@@ -123,7 +123,7 @@ function(ivw_vcpkg_install name)
         message(STATUS "Vcpkg fetching metadata for: ${name}")
         execute_process(
             COMMAND "${Python3_EXECUTABLE}" "${IVW_TOOLS_DIR}/vcpkginfo.py"
-                --vcpkg "${_VCPKG_EXECUTABLE}" 
+                --vcpkg "${Z_VCPKG_EXECUTABLE}" 
                 --pkg ${lowercase_name}
                 --triplet ${VCPKG_TARGET_TRIPLET}
                 ${overlay}
@@ -134,7 +134,7 @@ function(ivw_vcpkg_install name)
         )
         if(NOT pkgInfo)
             message(WARNING "  Unable to retrive vcpkg package info for ${name}.\n" 
-                "  vcpkg: ${_VCPKG_EXECUTABLE}\n"
+                "  vcpkg: ${Z_VCPKG_EXECUTABLE}\n"
                 "  triplet: ${VCPKG_TARGET_TRIPLET}\n"
                 "  package: ${lowercase_name}\n"
                 "  overlay: ${overlay}\n"
