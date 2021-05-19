@@ -46,3 +46,6 @@
 [submodule "ext/span/span"]
 	path = ext/span/span
 	url = https://github.com/inviwo/span.git
+[submodule "ext/quazip"]
+	path = ext/quazip
+	url = https://github.com/stachenov/quazip.git

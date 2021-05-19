@@ -133,6 +133,7 @@ std::string InviwoModule::getPath() const {
     std::string moduleNameLowerCase = toLower(getIdentifier());
 
     const auto defaultPath = filesystem::findBasePath() + "/modules/" + moduleNameLowerCase;
+    const auto marketModule = app_->getModuleByIdentifier("Marketplace");
 
     // By default always use this one. i.e. the module folder in the deployed app
     if (filesystem::directoryExists(defaultPath)) {

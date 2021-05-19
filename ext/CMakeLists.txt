@@ -69,7 +69,7 @@ if (NOT IVW_USE_EXTERNAL_IMG)
         TYPE "The MIT License" URL http://www.libtiff.org/
         FILES ${IVW_EXTENSIONS_DIR}/tiff/COPYRIGHT
     )
-    ivw_register_license_file(NAME libpng TARGET png MODULE Core EXT 
+    ivw_register_license_file(NAME libpng TARGET png MODULE Core EXT
         TYPE "libpng (BSD-style)" URL http://www.libpng.org/pub/png/libpng.html
         FILES ${IVW_EXTENSIONS_DIR}/libpng/LICENSE.txt
     )
@@ -96,11 +96,11 @@ ivw_register_license_file(NAME "Flags" MODULE Core EXT
 option(IVW_USE_EXTERNAL_GLM "GLM is provided externaly" OFF)
 if(NOT IVW_USE_EXTERNAL_GLM)
     add_subdirectory(glm)
-    ivw_register_license_file(NAME "OpenGL Mathematics (GLM)" 
+    ivw_register_license_file(NAME "OpenGL Mathematics (GLM)"
         VERSION 0.9.9.3 MODULE Core EXT URL "https://glm.g-truc.net"
         TYPE "The MIT License" FILES ${IVW_EXTENSIONS_DIR}/glm/LICENSE
     )
-else()  
+else()
     find_package(glm CONFIG REQUIRED)
     ivw_vcpkg_install(glm MODULE Core EXT)
 endif()
@@ -132,7 +132,7 @@ ivw_register_license_file(NAME "warn" MODULE Core EXT
 )
 
 # tclap
-add_subdirectory(tclap)    
+add_subdirectory(tclap)
 ivw_register_license_file(NAME "tclap" TARGET tclap_dummy MODULE Core EXT
     URL http://tclap.sourceforge.net/
     TYPE "The MIT License"
@@ -175,7 +175,7 @@ if(NOT IVW_USE_EXTERNAL_UTFCPP)
         TYPE "Boost Software License"
         FILES ${IVW_EXTENSIONS_DIR}/utf/LICENSE
     )
-else()  
+else()
     find_package(utf8cpp CONFIG REQUIRED)
     ivw_vcpkg_install(utfcpp MODULE Core EXT)
 endif()
@@ -237,7 +237,7 @@ if(IVW_USE_SIGAR)
 endif()
 
 if(WIN32) # Stackwalker for windows for stack traces in the log
-    add_subdirectory(stackwalker) 
+    add_subdirectory(stackwalker)
     ivw_register_license_file(NAME "stackwalker" TARGET inviwo::stackwalker MODULE Core EXT
         URL http://stackwalker.codeplex.com/
         TYPE "BSD-License"
@@ -272,3 +272,11 @@ if(Python3_FOUND)
         ivw_vcpkg_install(pybind11 COPYRIGHT copyright/LICENSE MODULE Core EXT)
     endif()
 endif()
+
+add_subdirectory(quazip)     # No package available
+ivw_register_license_file(NAME "quazip" MODULE Core EXT
+    URL "https://github.com/stachenov/quazip"
+    TYPE "GNU LESSER GENERAL PUBLIC LICENSE"
+    FILES ${IVW_EXTENSIONS_DIR}/quazip/COPYING
+)
+ivw_register_package(quazip QuaZip::QuaZip)

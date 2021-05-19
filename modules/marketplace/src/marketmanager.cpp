@@ -49,6 +49,8 @@
 #include <QFile>
 #include <QObject>
 
+#include <quazip/quazip.h>
+
 namespace inviwo {
 
 std::optional<std::string> getModuleName(const std::filesystem::path& path) {
@@ -244,6 +246,7 @@ void MarketManager::updateModuleBinData() {
 #else
         std::filesystem::path path(*marketPath / moduleName / ("libinviwo-module-" + moduleName + "module.so"));
 #endif
+        LogInfo("Looking for path: " << path.string());
         if (std::filesystem::exists(path)) {
             binModules_.push_back({url, moduleName, path});
         } else {
@@ -416,6 +419,25 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
     auto zipPath = moduleDir / (data.name + ".zip");
     dlManager_.download(data.url, zipPath.string());
 
+
+
+    // LogInfo("Download done. Unzipping");
+
+    // QuaZip zip(zipPath.string().c_str());
+    // LogInfo("Opening..");
+    // if (zip.open(QuaZip::mdUnzip)) {
+    //     LogInfo("Opened zip");
+
+    //     for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+    //         LogInfo("Got file: " << zip.getCurrentFileName().toStdString());
+    //     }
+    //     if (zip.getZipError() == UNZ_OK) {
+    //         LogInfo("no errors");
+    //     }
+    // } else {
+    //     LogInfo("Failed to open zip ");
+    // }
+
     // QNetworkAccessManager nm;
     // QObject::connect(
     //     &nm, &QNetworkAccessManager::finished, [moduleDir, data, this](QNetworkReply* reply) {
@@ -432,6 +454,7 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
 
 void MarketManager::tryLoadModule(const ModuleBinData& data) {
     if (data.path) {
+        LogInfo("trying to load " << data.path->string());
         app_->getModuleManager().tryRegisterModule(data.path->string());
     } else {
         LogInfo("Binary Module " << data.name << " has invalid path.");
