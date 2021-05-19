@@ -30,6 +30,8 @@
 #include <inviwo/marketplace/downloadmanager.h>
 #include <inviwo/core/util/logcentral.h>
 
+#include <filesystem>
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QObject>
@@ -37,6 +39,9 @@
 #include <QFile>
 #include <QUrl>
 #include <QVariant>
+
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
 
 namespace inviwo {
 
@@ -73,10 +78,40 @@ void DownloadManager::onDownloadFinished(QNetworkReply* reply) {
             file.close();
         }
         download->second->deleteLater();
+
+        auto pos = download->first.find(".zip");
+        if (pos != std::string::npos) {
+            // Unzip
+            QuaZip zip(download->first.c_str());
+            auto fn = std::filesystem::path(download->first);
+            auto modDir = fn.parent_path();
+            if (zip.open(QuaZip::mdUnzip)) {
+                LogInfo("Opened zip");
+
+                for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+                    auto cfn = zip.getCurrentFileName().toStdString();
+                    QuaZipFile src(zip.getZipName(), zip.getCurrentFileName());
+                    QFile dst(QString::fromStdString((modDir / cfn).string()));
+                    src.open(QIODevice::ReadOnly);
+                    dst.open(QIODevice::WriteOnly);
+                    dst.write(src.readAll());
+                    src.close();
+                    dst.close();
+                    LogInfo("Wrote File: " << cfn);
+                }
+                if (zip.getZipError() == UNZ_OK) {
+                    LogInfo("no errors");
+                }
+            } else {
+                LogInfo("Failed to open zip ");
+            }
+
+        }
         // downloads_.erase(download);
     } else {
         LogInfo("A download finished that is not registered in the DownloadManager");
     }
+
 }
 
 void DownloadManager::onErrorOccured(QNetworkReply::NetworkError code) {
