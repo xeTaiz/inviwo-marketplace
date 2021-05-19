@@ -168,7 +168,7 @@ jobs:
           -DIVW_USE_EXTERNAL_PYBIND11=ON
           -DIVW_USE_EXTERNAL_OPENEXR=ON
           ${{ matrix.cmake }}
-        buildWithCMake: true
+        buildWithCMake: false
 
 #     - name: Configure CMake
 #       shell: bash
