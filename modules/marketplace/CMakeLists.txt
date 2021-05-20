@@ -48,6 +48,7 @@ set(TEST_FILES
 ivw_add_unittest(${TEST_FILES})
 
 ivw_create_module(${SOURCE_FILES} ${MOCED_FILES} ${HEADER_FILES} ${SHADER_FILES})
+ivw_qt_add_to_install(inviwo-module-marketplace Qt5Core Qt5Gui Qt5Widgets Qt5Network)
 target_link_libraries(inviwo-module-marketplace PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network QuaZip::QuaZip)
 
 # Add shader directory to install package
