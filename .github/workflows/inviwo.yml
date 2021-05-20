@@ -157,6 +157,11 @@ jobs:
 
     - name: Setup C++
       uses: Trass3r/setup-cpp@v1
+      
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+      with:
+        vs-version: '16.8'
 
     - name: Build
       timeout-minutes: 180
