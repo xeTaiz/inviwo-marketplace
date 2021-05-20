@@ -70,6 +70,10 @@ void DownloadManager::onDownloadFinished(QNetworkReply* reply) {
     if (download != downloads_.end()) {
         // QVariant possibleRedirectUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
         LogInfo("NetworkReply finished: " << download->second->isFinished());
+        auto error = download->second->error();
+        if (error != QNetworkReply::NoError) {
+            LogInfo("NetworkError " << error);
+        }
         QFile file(QString::fromStdString(download->first));
         if(file.open(QIODevice::WriteOnly)){
             auto bytesWritten = file.write(reply->readAll());
