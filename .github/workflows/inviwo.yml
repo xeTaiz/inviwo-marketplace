@@ -166,6 +166,16 @@ jobs:
            -DIVW_USE_EXTERNAL_OPENEXR=ON
            ${{ matrix.cmake }}
          buildWithCMake: false
+         
+    - name: Error Logs Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: error-logs
+        path: |
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+          build/vcpkg-manifest-install.log
+      if: ${{ failure() }}
 
     - name: Setup C++
       uses: Trass3r/setup-cpp@v1
