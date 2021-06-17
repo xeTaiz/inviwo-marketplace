@@ -27,11 +27,11 @@ jobs:
 #            mono: 'mono'
 #            cmake: '-DIVW_MODULE_HDF5=OFF'
 #            generator: 'Ninja'
-#          - os: 'ubuntu-20.04'
-#            triplet: 'x64-linux'
-#            mono: 'mono'
-#            cmake: '-DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF'
-#            generator: 'Ninja'
+          - os: 'ubuntu-20.04'
+            triplet: 'x64-linux'
+            mono: 'mono'
+            cmake: '-DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF'
+            generator: 'Ninja'
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
