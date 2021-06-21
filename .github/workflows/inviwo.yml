@@ -204,6 +204,19 @@ jobs:
             Automatic Release to Inviwo Marketplace.
           draft: false
           prerelease: false
+          
+    - name: Package
+      if: runner.os == 'Windows'
+      working-directory: build
+      shell: bash
+      run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target package
+      
+    - name: Upload Windows
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v2
+      with:
+        name: inviwo-installer-win
+        path: build/inviwo-v*.exe
 
     - name: Upload Release Assets
       id: upload-release-asset
