@@ -146,7 +146,7 @@ jobs:
            -DIVW_PACKAGE_EMBED_PYTHON=OFF
            -DIVW_APP_PYTHON=OFF
            -DIVW_MODULE_MARKETTESTMODULE=ON
-           -DIVW_USE_EXTERNAL_ASSIMP=ON
+           -DIVW_USE_EXTERNAL_ASSIMP=OFF
            -DIVW_USE_EXTERNAL_BENCHMARK=ON
            -DIVW_USE_EXTERNAL_EIGEN=ON
            -DIVW_USE_EXTERNAL_FMT=ON
@@ -166,7 +166,7 @@ jobs:
            -DIVW_USE_EXTERNAL_OPENEXR=ON
            ${{ matrix.cmake }}
          buildWithCMake: false
-         
+
     - name: Error Logs Artifact
       uses: actions/upload-artifact@v2
       with:
