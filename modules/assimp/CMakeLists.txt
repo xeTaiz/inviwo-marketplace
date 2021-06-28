@@ -1,5 +1,5 @@
 # Inviwo assimp Module
-ivw_module(Assimp)
+ivw_module(assimp)
 
 set(HEADER_FILES
     include/modules/assimp/assimpmodule.h
@@ -23,14 +23,14 @@ if(NOT IVW_USE_EXTERNAL_ASSIMP)
 	target_include_directories(inviwo-module-assimp PUBLIC 
     	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/include>
 	)
-    ivw_register_license_file(NAME Assimp VERSION ${Assimp_VERSION} MODULE Assimp 
+    ivw_register_license_file(NAME assimp VERSION ${Assimp_VERSION} MODULE assimp 
         URL http://assimp.sf.net
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/assimp/LICENSE
     )
     ivw_default_install_targets(assimp)
 else()
-    find_package(Assimp CONFIG REQUIRED)
-    ivw_vcpkg_install(assimp MODULE Assimp)
+    find_package(assimp CONFIG REQUIRED)
+    ivw_vcpkg_install(assimp MODULE assimp)
 endif()
 
 target_link_libraries(inviwo-module-assimp PUBLIC assimp::assimp)
