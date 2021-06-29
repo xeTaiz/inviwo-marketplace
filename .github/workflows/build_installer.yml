@@ -26,11 +26,11 @@ jobs:
 #            mono: 'mono'
 #            cmake: '-DIVW_MODULE_HDF5=OFF'
 #            generator: 'Ninja'
-          - os: 'ubuntu-20.04'
-            triplet: 'x64-linux'
-            mono: 'mono'
-            cmake: '-DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF'
-            generator: 'Ninja'
+          # - os: 'ubuntu-20.04'
+          #   triplet: 'x64-linux'
+          #   mono: 'mono'
+          #   cmake: '-DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF'
+          #   generator: 'Ninja'
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -200,5 +200,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: build/inviwo-v*.exe
-        asset_name: inviwo-installer-win.exes
+        asset_name: inviwo-installer-win.exe
         asset_content_type: application/exe

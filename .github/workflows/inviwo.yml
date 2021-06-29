@@ -1,4 +1,4 @@
-name: Build Inviwo
+name: Build Inviwo (all, old)
 
 on: [push]
 
@@ -166,7 +166,7 @@ jobs:
            -DIVW_USE_EXTERNAL_OPENEXR=ON
            ${{ matrix.cmake }}
          buildWithCMake: false
-         
+
     - name: Error Logs Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -204,13 +204,13 @@ jobs:
             Automatic Release to Inviwo Marketplace.
           draft: false
           prerelease: false
-          
+
     - name: Package
       if: runner.os == 'Windows'
       working-directory: build
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target package
-      
+
     - name: Upload Windows
       if: runner.os == 'Windows'
       uses: actions/upload-artifact@v2

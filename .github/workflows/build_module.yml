@@ -1,4 +1,4 @@
-name: Build Inviwo
+name: Build Module
 
 on: [push]
 
