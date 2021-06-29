@@ -1,5 +1,5 @@
 # Inviwo assimp Module
-ivw_module(assimp)
+ivw_module(Assimp)
 
 set(HEADER_FILES
     include/modules/assimp/assimpmodule.h
