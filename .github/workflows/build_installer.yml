@@ -185,6 +185,12 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel --target package
 
+    - name: Zip Installer
+      uses: papeloto/action-zip@v1
+      with:
+        files: build/inviwo-v*.exe
+        dest: inviwo-installer-win.zip
+
     - name: Upload Windows
       if: runner.os == 'Windows'
       uses: actions/upload-artifact@v2
@@ -212,6 +218,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: build/inviwo-v*.exe
+        asset_path: inviwo-installer-win.zip
         asset_name: inviwo-installer-win.exe
-        asset_content_type: application/exe
+        asset_content_type: application/zip
