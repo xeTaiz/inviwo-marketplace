@@ -187,17 +187,25 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel
 
-    - name: Build Ninja
-      if: runner.os != 'Windows'
+    - name: Build Linux
+      if: runner.os != 'Linux'
       timeout-minutes: 180
       working-directory: build
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel 2
 
-    - name: Zip Module Data
+    - name: Zip Module Data (Windows)
+      if: runner.os == 'Windows'
       uses: papeloto/action-zip@v1
       with:
         files: build/bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll build/modules/${{ env.MODULE_NAME }}/
+        dest: ${{ env.MODULE_NAME }}.zip
+
+    - name: Zip Module Data (Linux)
+      if: runner.os == 'Linux'
+      uses: papeloto/action-zip@v1
+      with:
+        files: build/lib/libinviwo-module-${{ env.MODULE_NAME }}.so build/modules/${{ env.MODULE_NAME }}/
         dest: ${{ env.MODULE_NAME }}.zip
 
     - name: Release Module Artifact
