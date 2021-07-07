@@ -205,7 +205,7 @@ jobs:
       if: runner.os == 'Linux'
       uses: papeloto/action-zip@v1
       with:
-        files: build/bin/libinviwo-module-${{ env.MODULE_NAME }}.so build/modules/${{ env.MODULE_NAME }}/
+        files: build/lib/libinviwo-module-${{ env.MODULE_NAME }}.so build/modules/${{ env.MODULE_NAME }}/
         dest: ${{ env.MODULE_NAME }}.zip
 
     - name: Release Module Artifact
