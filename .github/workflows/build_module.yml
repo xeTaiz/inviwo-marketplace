@@ -145,7 +145,7 @@ jobs:
            -DIVW_MODULE_DATAFRAMEPYTHON=OFF
            -DIVW_PACKAGE_EMBED_PYTHON=OFF
            -DIVW_APP_PYTHON=OFF
-           -DIVW_MODULE_MARKETTESTMODULE=ON
+           -DIVW_MODULE_${{ env.MODULE_NAME }}=ON
            -DIVW_USE_EXTERNAL_ASSIMP=ON
            -DIVW_USE_EXTERNAL_BENCHMARK=ON
            -DIVW_USE_EXTERNAL_EIGEN=ON
@@ -188,7 +188,7 @@ jobs:
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel
 
     - name: Build Linux
-      if: runner.os != 'Linux'
+      if: runner.os == 'Linux'
       timeout-minutes: 180
       working-directory: build
       shell: bash
