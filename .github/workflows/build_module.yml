@@ -8,7 +8,7 @@ env:
   #IVW_VCPKG_SHA: '399458a9d9a763c0e06cc979464a17074fe8517d'  # nuget verbose version, git remote add inviwo https://github.com/inviwo/vcpkg.git
   VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'        # recognized by vcpkg
   # QT_DEBUG_PLUGINS: 1                                         # print qt plugin debug info
-  MODULE_NAME: markettestmodule
+  MODULE_NAME: markettest
 
 jobs:
   build:
