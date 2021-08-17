@@ -196,18 +196,15 @@ jobs:
 
     - name: Print Stuff
       shell: bash
-      run: >
-          pwd && ls -l .
+      run: pwd && ls -l .
 
     - name: Print Stuff wd
       working-directory: build
       shell: bash
-      run: >
-          pwd && ls -l .
+      run: pwd && ls -l .
 
     - name: Zip Module Data (Windows)
       if: runner.os == 'Windows'
-      working-directory: build
       uses: papeloto/action-zip@v1
       with:
         files: bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll modules/${{ env.MODULE_NAME }}/
@@ -215,7 +212,6 @@ jobs:
 
     - name: Zip Module Data (Linux)
       if: runner.os == 'Linux'
-      working-directory: build
       uses: papeloto/action-zip@v1
       with:
         files: ../../lib/libinviwo-module-${{ env.MODULE_NAME }}.so modules/${{ env.MODULE_NAME }}/
