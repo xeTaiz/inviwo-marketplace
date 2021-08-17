@@ -208,18 +208,16 @@ jobs:
 
     - name: Zip Module Data (Windows)
       if: runner.os == 'Windows'
-      working-directory: /d/a/inviwo-marketplace/build
       uses: papeloto/action-zip@v1
       with:
-        files: bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll modules/${{ env.MODULE_NAME }}/
+        files: /build/bin/Release/inviwo-module-${{ env.MODULE_NAME }}.dll build/modules/${{ env.MODULE_NAME }}/
         dest: ${{ env.MODULE_NAME }}.zip
 
     - name: Zip Module Data (Linux)
       if: runner.os == 'Linux'
-      working-directory: /home/runner/work/inviwo-marketplace/build
       uses: papeloto/action-zip@v1
       with:
-        files:  lib/libinviwo-module-${{ env.MODULE_NAME }}.so modules/${{ env.MODULE_NAME }}/
+        files:  build/lib/libinviwo-module-${{ env.MODULE_NAME }}.so build/modules/${{ env.MODULE_NAME }}/
         dest: ${{ env.MODULE_NAME }}.zip
 
     - name: Release Module Artifact
