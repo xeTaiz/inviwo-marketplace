@@ -8,7 +8,8 @@ env:
   #IVW_VCPKG_SHA: '399458a9d9a763c0e06cc979464a17074fe8517d'  # nuget verbose version, git remote add inviwo https://github.com/inviwo/vcpkg.git
   VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'        # recognized by vcpkg
   # QT_DEBUG_PLUGINS: 1                                         # print qt plugin debug info
-  MODULE_NAME: markettest
+  MODULE_NAME: markettestmodule
+  MODULE_NAME_CAPS: MARKETTESTMODULE
 
 jobs:
   build:
@@ -204,7 +205,7 @@ jobs:
       if: runner.os == 'Linux'
       working-directory: build
       shell: bash
-      run: pwd && ls -l lib/ | grep .so && ls -l modules/
+      run: pwd && ls -l lib/ | grep .so && ls -l modules/l
 
     - name: Zip Module Data (Windows)
       if: runner.os == 'Windows'
