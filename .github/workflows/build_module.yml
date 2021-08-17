@@ -194,6 +194,17 @@ jobs:
       shell: bash
       run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel 2
 
+    - name: Print Stuff
+      shell: bash
+      run: >
+          pwd && ls -l .
+
+    - name: Print Stuff wd
+      working-directory: build
+      shell: bash
+      run: >
+          pwd && ls -l .
+
     - name: Zip Module Data (Windows)
       if: runner.os == 'Windows'
       working-directory: build
