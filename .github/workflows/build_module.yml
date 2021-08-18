@@ -146,7 +146,7 @@ jobs:
            -DIVW_MODULE_DATAFRAMEPYTHON=OFF
            -DIVW_PACKAGE_EMBED_PYTHON=OFF
            -DIVW_APP_PYTHON=OFF
-           -DIVW_MODULE_${{ env.MODULE_NAME }}=ON
+           -DIVW_MODULE_${{ env.MODULE_NAME_CAPS }}=ON
            -DIVW_USE_EXTERNAL_ASSIMP=ON
            -DIVW_USE_EXTERNAL_BENCHMARK=ON
            -DIVW_USE_EXTERNAL_EIGEN=ON
@@ -205,7 +205,7 @@ jobs:
       if: runner.os == 'Linux'
       working-directory: build
       shell: bash
-      run: pwd && ls -l lib/ | grep .so && ls -l modules/l
+      run: pwd && ls -l lib/ | grep .so && ls -l modules/
 
     - name: Zip Module Data (Windows)
       if: runner.os == 'Windows'
