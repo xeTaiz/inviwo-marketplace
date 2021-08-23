@@ -70,7 +70,7 @@ jobs:
       shell: bash
       if: runner.os == 'Linux'
       run: |
-        sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libglew-dev ninja-build doxygen-latex
+        sudo apt-get install -y libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libglew-dev ninja-build doxygen-latex
 
     - name: Brew Install
       shell: bash
