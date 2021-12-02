@@ -46,8 +46,8 @@ public:
     virtual ~ProcessorWidgetQt() = default;
 
     virtual void setVisible(bool visible) override;
-    virtual void show() override;                     // Override ProcessorWidget
-    virtual void hide() override;                     // Override ProcessorWidget
+    virtual void show();
+    virtual void hide();
     virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
     virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
     virtual void setFullScreen(bool fullScreen) override;
