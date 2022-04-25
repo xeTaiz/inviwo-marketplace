@@ -4,17 +4,17 @@ on:
   push:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      ext_modules_path:
+        description: "External modules path"
+        required: false
+        default: ""
 
 env:
   BUILD_TYPE: Release
   VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'         # recognized by vcpkg
   # QT_DEBUG_PLUGINS: 1                                        # print qt plugin debug info
 
-inputs:
-  ext_modules_path:
-    description: "External modules path"
-    required: false
-    default: ""
 
 jobs:
   build:
