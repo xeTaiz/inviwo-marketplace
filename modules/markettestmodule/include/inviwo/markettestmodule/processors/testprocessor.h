@@ -2,7 +2,7 @@
  *
  * Inviwo - Interactive Visualization Workshop
  *
- * Copyright (c) 2012-2021 Inviwo Foundation
+ * Copyright (c) 2021 Inviwo Foundation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,48 +29,40 @@
 
 #pragma once
 
-#include <modules/qtwidgets/qtwidgetsmoduledefine.h>
-#include <inviwo/core/processors/processorwidget.h>
+#include <inviwo/markettestmodule/markettestmodulemoduledefine.h>
 #include <inviwo/core/processors/processor.h>
-
-#include <warn/push>
-#include <warn/ignore/all>
-#include <QWidget>
-#include <warn/pop>
+#include <inviwo/core/properties/ordinalproperty.h>
+#include <inviwo/core/ports/imageport.h>
 
 namespace inviwo {
 
-class IVW_MODULE_QTWIDGETS_API ProcessorWidgetQt : public ProcessorWidget, public QWidget {
+/** \docpage{org.inviwo.TestProcessor, Test Processor}
+ * ![](org.inviwo.TestProcessor.png?classIdentifier=org.inviwo.TestProcessor)
+ * Explanation of how to use the processor.
+ *
+ * ### Inports
+ *   * __<Inport1>__ <description>.
+ *
+ * ### Outports
+ *   * __<Outport1>__ <description>.
+ *
+ * ### Properties
+ *   * __<Prop1>__ <description>.
+ *   * __<Prop2>__ <description>
+ */
+class IVW_MODULE_MARKETTESTMODULE_API TestProcessor : public Processor {
 public:
-    ProcessorWidgetQt(Processor* p);
-    virtual ~ProcessorWidgetQt() = default;
+    TestProcessor();
+    virtual ~TestProcessor() = default;
 
-    virtual void setVisible(bool visible) override;
-    virtual void show();
-    virtual void hide();
-    virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
-    virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
-    virtual void setFullScreen(bool fullScreen) override;
-    virtual void setOnTop(bool onTop) override;
+    virtual void process() override;
 
-protected:
-    virtual void updateVisible(bool visible) override;
-    virtual void updateDimensions(ivec2) override;
-    virtual void updatePosition(ivec2) override;
-    virtual void updateFullScreen(bool) override;
-    virtual void updateOnTop(bool) override;
+    virtual const ProcessorInfo getProcessorInfo() const override;
+    static const ProcessorInfo processorInfo_;
 
-    // Override QWidget events
-    virtual void resizeEvent(QResizeEvent*) override;
-    virtual void closeEvent(QCloseEvent*) override;
-    virtual void showEvent(QShowEvent*) override;
-    virtual void hideEvent(QHideEvent*) override;
-    virtual void moveEvent(QMoveEvent*) override;
-
-    bool ignoreEvents_{false};
-    bool resizeOngoing_{false};
-
-    Processor::NameDispatcherHandle nameChange_;
+private:
+    ImageOutport outport_;
+    FloatVec3Property position_;
 };
 
 }  // namespace inviwo

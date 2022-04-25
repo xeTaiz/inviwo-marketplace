@@ -2,7 +2,7 @@
  *
  * Inviwo - Interactive Visualization Workshop
  *
- * Copyright (c) 2012-2021 Inviwo Foundation
+ * Copyright (c) 2021 Inviwo Foundation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,50 +27,31 @@
  *
  *********************************************************************************/
 
-#pragma once
-
-#include <modules/qtwidgets/qtwidgetsmoduledefine.h>
-#include <inviwo/core/processors/processorwidget.h>
-#include <inviwo/core/processors/processor.h>
-
-#include <warn/push>
-#include <warn/ignore/all>
-#include <QWidget>
-#include <warn/pop>
+#include <inviwo/markettestmodule/processors/testprocessor.h>
 
 namespace inviwo {
 
-class IVW_MODULE_QTWIDGETS_API ProcessorWidgetQt : public ProcessorWidget, public QWidget {
-public:
-    ProcessorWidgetQt(Processor* p);
-    virtual ~ProcessorWidgetQt() = default;
-
-    virtual void setVisible(bool visible) override;
-    virtual void show();
-    virtual void hide();
-    virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
-    virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
-    virtual void setFullScreen(bool fullScreen) override;
-    virtual void setOnTop(bool onTop) override;
-
-protected:
-    virtual void updateVisible(bool visible) override;
-    virtual void updateDimensions(ivec2) override;
-    virtual void updatePosition(ivec2) override;
-    virtual void updateFullScreen(bool) override;
-    virtual void updateOnTop(bool) override;
-
-    // Override QWidget events
-    virtual void resizeEvent(QResizeEvent*) override;
-    virtual void closeEvent(QCloseEvent*) override;
-    virtual void showEvent(QShowEvent*) override;
-    virtual void hideEvent(QHideEvent*) override;
-    virtual void moveEvent(QMoveEvent*) override;
-
-    bool ignoreEvents_{false};
-    bool resizeOngoing_{false};
-
-    Processor::NameDispatcherHandle nameChange_;
+// The Class Identifier has to be globally unique. Use a reverse DNS naming scheme
+const ProcessorInfo TestProcessor::processorInfo_{
+    "org.inviwo.TestProcessor",      // Class identifier
+    "Test Processor",                // Display name
+    "Undefined",              // Category
+    CodeState::Experimental,  // Code state
+    Tags::None,               // Tags
 };
+const ProcessorInfo TestProcessor::getProcessorInfo() const { return processorInfo_; }
+
+TestProcessor::TestProcessor()
+    : Processor()
+    , outport_("outport")
+    , position_("position", "Position", vec3(0.0f), vec3(-100.0f), vec3(100.0f)) {
+
+    addPort(outport_);
+    addProperty(position_);
+}
+
+void TestProcessor::process() {
+    // outport_.setData(myImage);
+}
 
 }  // namespace inviwo

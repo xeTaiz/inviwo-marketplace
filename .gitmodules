@@ -49,3 +49,6 @@
 [submodule "ext/units/units"]
 	path = ext/units/units
 	url = https://github.com/LLNL/units.git
+[submodule "ext/quazip"]
+	path = ext/quazip
+	url = https://github.com/stachenov/quazip.git

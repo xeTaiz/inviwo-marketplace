@@ -2,7 +2,7 @@
  *
  * Inviwo - Interactive Visualization Workshop
  *
- * Copyright (c) 2012-2021 Inviwo Foundation
+ * Copyright (c) 2021 Inviwo Foundation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,51 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************************/
-
 #pragma once
 
-#include <modules/qtwidgets/qtwidgetsmoduledefine.h>
-#include <inviwo/core/processors/processorwidget.h>
-#include <inviwo/core/processors/processor.h>
+#include <inviwo/marketplace/marketplacemoduledefine.h>
+#include <inviwo/marketplace/marketmanager.h>
+#include <inviwo/qt/editor/inviwomainwindow.h>
 
-#include <warn/push>
-#include <warn/ignore/all>
-#include <QWidget>
-#include <warn/pop>
+#include <vector>
+#include <string>
+
+#include <QFrame>
+
+class QWidget;
+class QLabel;
+class QTextEdit;
+class QPushButton;
 
 namespace inviwo {
 
-class IVW_MODULE_QTWIDGETS_API ProcessorWidgetQt : public ProcessorWidget, public QWidget {
+/**
+ * \brief QT Widget for Modules Marketplace
+ * Implements the items representing one module for binaries
+ */
+class IVW_MODULE_MARKETPLACE_API MarketBinModuleWidgetQt : public QFrame {
 public:
-    ProcessorWidgetQt(Processor* p);
-    virtual ~ProcessorWidgetQt() = default;
+    MarketBinModuleWidgetQt(const ModuleBinData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
+    virtual ~MarketBinModuleWidgetQt() = default;
+    MarketBinModuleWidgetQt(const MarketBinModuleWidgetQt&) = delete;
+    MarketBinModuleWidgetQt& operator=(const MarketBinModuleWidgetQt&) = delete;
 
-    virtual void setVisible(bool visible) override;
-    virtual void show();
-    virtual void hide();
-    virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
-    virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
-    virtual void setFullScreen(bool fullScreen) override;
-    virtual void setOnTop(bool onTop) override;
+private:
+    std::shared_ptr<MarketManager> manager_;
 
-protected:
-    virtual void updateVisible(bool visible) override;
-    virtual void updateDimensions(ivec2) override;
-    virtual void updatePosition(ivec2) override;
-    virtual void updateFullScreen(bool) override;
-    virtual void updateOnTop(bool) override;
+    QLabel* moduleName_;
+    QTextEdit* description_;
 
-    // Override QWidget events
-    virtual void resizeEvent(QResizeEvent*) override;
-    virtual void closeEvent(QCloseEvent*) override;
-    virtual void showEvent(QShowEvent*) override;
-    virtual void hideEvent(QHideEvent*) override;
-    virtual void moveEvent(QMoveEvent*) override;
-
-    bool ignoreEvents_{false};
-    bool resizeOngoing_{false};
-
-    Processor::NameDispatcherHandle nameChange_;
+    QPushButton* downloadBtn_;
+    QPushButton* loadBtn_;
 };
 
 }  // namespace inviwo

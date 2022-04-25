@@ -2,7 +2,7 @@
  *
  * Inviwo - Interactive Visualization Workshop
  *
- * Copyright (c) 2012-2021 Inviwo Foundation
+ * Copyright (c) 2021 Inviwo Foundation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,51 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************************/
-
 #pragma once
 
-#include <modules/qtwidgets/qtwidgetsmoduledefine.h>
-#include <inviwo/core/processors/processorwidget.h>
-#include <inviwo/core/processors/processor.h>
-
-#include <warn/push>
-#include <warn/ignore/all>
-#include <QWidget>
-#include <warn/pop>
+#include <inviwo/marketplace/marketplacemoduledefine.h>
+#include <inviwo/core/util/settings/settings.h>
+#include <inviwo/core/properties/fileproperty.h>
+#include <inviwo/core/properties/directoryproperty.h>
 
 namespace inviwo {
 
-class IVW_MODULE_QTWIDGETS_API ProcessorWidgetQt : public ProcessorWidget, public QWidget {
+/**
+ * \brief VERY_BRIEFLY_DESCRIBE_THE_CLASS
+ * DESCRIBE_THE_CLASS_FROM_A_DEVELOPER_PERSPECTIVE
+ */
+class IVW_MODULE_MARKETPLACE_API MarketplaceSettings : public Settings {
 public:
-    ProcessorWidgetQt(Processor* p);
-    virtual ~ProcessorWidgetQt() = default;
+    MarketplaceSettings(InviwoApplication* app);
+    virtual ~MarketplaceSettings() = default;
 
-    virtual void setVisible(bool visible) override;
-    virtual void show();
-    virtual void hide();
-    virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
-    virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
-    virtual void setFullScreen(bool fullScreen) override;
-    virtual void setOnTop(bool onTop) override;
+    FileProperty cmakeExec_;
+    FileProperty gitExec_;
+    DirectoryProperty buildDir_;
+    DirectoryProperty marketDir_;
 
-protected:
-    virtual void updateVisible(bool visible) override;
-    virtual void updateDimensions(ivec2) override;
-    virtual void updatePosition(ivec2) override;
-    virtual void updateFullScreen(bool) override;
-    virtual void updateOnTop(bool) override;
-
-    // Override QWidget events
-    virtual void resizeEvent(QResizeEvent*) override;
-    virtual void closeEvent(QCloseEvent*) override;
-    virtual void showEvent(QShowEvent*) override;
-    virtual void hideEvent(QHideEvent*) override;
-    virtual void moveEvent(QMoveEvent*) override;
-
-    bool ignoreEvents_{false};
-    bool resizeOngoing_{false};
-
-    Processor::NameDispatcherHandle nameChange_;
 };
 
 }  // namespace inviwo

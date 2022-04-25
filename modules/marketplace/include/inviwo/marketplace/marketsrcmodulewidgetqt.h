@@ -2,7 +2,7 @@
  *
  * Inviwo - Interactive Visualization Workshop
  *
- * Copyright (c) 2012-2021 Inviwo Foundation
+ * Copyright (c) 2021 Inviwo Foundation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,51 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *********************************************************************************/
-
 #pragma once
 
-#include <modules/qtwidgets/qtwidgetsmoduledefine.h>
-#include <inviwo/core/processors/processorwidget.h>
-#include <inviwo/core/processors/processor.h>
+#include <inviwo/marketplace/marketplacemoduledefine.h>
+#include <inviwo/marketplace/marketmanager.h>
+#include <inviwo/qt/editor/inviwomainwindow.h>
 
-#include <warn/push>
-#include <warn/ignore/all>
-#include <QWidget>
-#include <warn/pop>
+#include <vector>
+#include <string>
+
+#include <QFrame>
+
+class QWidget;
+class QTextEdit;
+class QToolButton;
+class QPushButton;
+class QImage;
+class QLabel;
 
 namespace inviwo {
 
-class IVW_MODULE_QTWIDGETS_API ProcessorWidgetQt : public ProcessorWidget, public QWidget {
+/**
+ * \brief QT Widget for Modules Marketplace
+ * Implements the items representing one module for source code
+ */
+class IVW_MODULE_MARKETPLACE_API MarketSrcModuleWidgetQt : public QFrame {
 public:
-    ProcessorWidgetQt(Processor* p);
-    virtual ~ProcessorWidgetQt() = default;
-
-    virtual void setVisible(bool visible) override;
-    virtual void show();
-    virtual void hide();
-    virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
-    virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
-    virtual void setFullScreen(bool fullScreen) override;
-    virtual void setOnTop(bool onTop) override;
+    MarketSrcModuleWidgetQt(const ModuleSrcData& data, QWidget* parent, std::shared_ptr<MarketManager> manager);
+    virtual ~MarketSrcModuleWidgetQt() = default;
+    MarketSrcModuleWidgetQt(const MarketSrcModuleWidgetQt&) = delete;
+    MarketSrcModuleWidgetQt& operator=(const MarketSrcModuleWidgetQt&) = delete;
 
 protected:
-    virtual void updateVisible(bool visible) override;
-    virtual void updateDimensions(ivec2) override;
-    virtual void updatePosition(ivec2) override;
-    virtual void updateFullScreen(bool) override;
-    virtual void updateOnTop(bool) override;
 
-    // Override QWidget events
-    virtual void resizeEvent(QResizeEvent*) override;
-    virtual void closeEvent(QCloseEvent*) override;
-    virtual void showEvent(QShowEvent*) override;
-    virtual void hideEvent(QHideEvent*) override;
-    virtual void moveEvent(QMoveEvent*) override;
+private:
+    std::shared_ptr<MarketManager> manager_;
 
-    bool ignoreEvents_{false};
-    bool resizeOngoing_{false};
+    QImage* preview_;
+    QLabel* moduleName_;
+    QTextEdit* description_;
 
-    Processor::NameDispatcherHandle nameChange_;
+    QPushButton* cloneBtn_;
+    QPushButton* configureBtn_;
+    QPushButton* pullBtn_;
+    QPushButton* buildBtn_;
+
+    QToolButton* installBtn_;
+    QLabel* downloadStatus_;
+    QLabel* installStatus_;
+    QLabel* loadingStatus_;
+
+    bool cloned_;
+    bool installed_;
+    bool enabled_;
 };
 
 }  // namespace inviwo

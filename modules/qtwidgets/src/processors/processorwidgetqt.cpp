@@ -95,6 +95,11 @@ ProcessorWidgetQt::ProcessorWidgetQt(Processor* p)
                                   ProcessorWidget::isOnTop());
 }
 
+void ProcessorWidgetQt::show() { ProcessorWidgetQt::setVisible(true); }
+
+void ProcessorWidgetQt::hide() { ProcessorWidgetQt::setVisible(false); }
+
+void ProcessorWidgetQt::setVisible(bool visible) { QWidget::setVisible(visible); }
 void ProcessorWidgetQt::setPosition(glm::ivec2 pos) {
     if (pos != utilqt::toGLM(QWidget::pos())) {
         QWidget::move(pos.x, pos.y);  // This will trigger a move event.

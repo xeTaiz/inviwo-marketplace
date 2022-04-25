@@ -2,7 +2,7 @@
  *
  * Inviwo - Interactive Visualization Workshop
  *
- * Copyright (c) 2012-2021 Inviwo Foundation
+ * Copyright (c) 2021 Inviwo Foundation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,50 +27,40 @@
  *
  *********************************************************************************/
 
-#pragma once
+#ifdef _MSC_VER
+#pragma comment(linker, "/SUBSYSTEM:CONSOLE")
+#ifdef IVW_ENABLE_MSVC_MEM_LEAK_TEST
+#include <vld.h>
+#endif
+#endif
 
-#include <modules/qtwidgets/qtwidgetsmoduledefine.h>
-#include <inviwo/core/processors/processorwidget.h>
-#include <inviwo/core/processors/processor.h>
+#include <inviwo/core/util/logcentral.h>
+#include <inviwo/core/util/consolelogger.h>
+#include <inviwo/testutil/configurablegtesteventlistener.h>
 
 #include <warn/push>
 #include <warn/ignore/all>
-#include <QWidget>
+#include <gtest/gtest.h>
 #include <warn/pop>
 
-namespace inviwo {
+int main(int argc, char** argv) {
+    using namespace inviwo;
+    LogCentral::init();
+    auto logger = std::make_shared<ConsoleLogger>();
+    LogCentral::getPtr()->setVerbosity(LogVerbosity::Error);
+    LogCentral::getPtr()->registerLogger(logger);
 
-class IVW_MODULE_QTWIDGETS_API ProcessorWidgetQt : public ProcessorWidget, public QWidget {
-public:
-    ProcessorWidgetQt(Processor* p);
-    virtual ~ProcessorWidgetQt() = default;
-
-    virtual void setVisible(bool visible) override;
-    virtual void show();
-    virtual void hide();
-    virtual void setPosition(ivec2 pos) override;     // Override ProcessorWidget
-    virtual void setDimensions(ivec2 dime) override;  // Override ProcessorWidget
-    virtual void setFullScreen(bool fullScreen) override;
-    virtual void setOnTop(bool onTop) override;
-
-protected:
-    virtual void updateVisible(bool visible) override;
-    virtual void updateDimensions(ivec2) override;
-    virtual void updatePosition(ivec2) override;
-    virtual void updateFullScreen(bool) override;
-    virtual void updateOnTop(bool) override;
-
-    // Override QWidget events
-    virtual void resizeEvent(QResizeEvent*) override;
-    virtual void closeEvent(QCloseEvent*) override;
-    virtual void showEvent(QShowEvent*) override;
-    virtual void hideEvent(QHideEvent*) override;
-    virtual void moveEvent(QMoveEvent*) override;
-
-    bool ignoreEvents_{false};
-    bool resizeOngoing_{false};
-
-    Processor::NameDispatcherHandle nameChange_;
-};
-
-}  // namespace inviwo
+    int ret = -1;
+    {
+#ifdef IVW_ENABLE_MSVC_MEM_LEAK_TEST
+        VLDDisable();
+        ::testing::InitGoogleTest(&argc, argv);
+        VLDEnable();
+#else
+        ::testing::InitGoogleTest(&argc, argv);
+#endif
+        inviwo::ConfigurableGTestEventListener::setup();
+        ret = RUN_ALL_TESTS();
+    }
+    return ret;
+}

@@ -1,6 +1,7 @@
 {
     "name": "inviwo",
     "version-string" : "0.9.11.1",
+    "builtin-baseline" : "",
     "homepage" : "https://github.com/inviwo/inviwo",
     "license": "BSD-2-Clause",
     "dependencies" : [
@@ -34,4 +35,3 @@
         "zlib"
     ]
 }   
-

@@ -23,7 +23,7 @@ if(NOT IVW_USE_EXTERNAL_ASSIMP)
 	target_include_directories(inviwo-module-assimp PUBLIC 
     	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/include>
 	)
-    ivw_register_license_file(NAME Assimp VERSION ${Assimp_VERSION} MODULE Assimp 
+    ivw_register_license_file(NAME assimp VERSION ${Assimp_VERSION} MODULE assimp 
         URL http://assimp.sf.net
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/assimp/LICENSE
     )

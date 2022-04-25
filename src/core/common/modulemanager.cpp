@@ -256,6 +256,37 @@ void ModuleManager::registerModules(RuntimeModuleLoading) {
     registerModules(std::move(modules));
 }
 
+void ModuleManager::tryRegisterModule(const std::string& libPath){
+    std::vector<std::unique_ptr<InviwoModuleFactoryObject>> modules;
+    try {
+        // Load library. Will throw exception if failed to load
+        auto sharedLib = std::make_unique<SharedLibrary>(libPath);
+        // Only consider libraries with Inviwo module creation function
+        if (auto moduleFunc = sharedLib->findSymbolTyped<f_getModule>("createModule")) {
+            // Add module factory object
+            modules.emplace_back(moduleFunc());
+            auto moduleName = toLower(modules.back()->name);
+            if (modules.back()->protectedModule == ProtectedModule::on) {
+                protected_.insert(modules.back()->name);
+            }
+            sharedLibraries_.emplace_back(std::move(sharedLib));
+            if (isRuntimeModuleReloadingEnabled()) {
+                libraryObserver_.observe(libPath);
+            }
+        } else {
+            LogInfo("There's no createModule function in the given library: " << libPath);
+        }
+    } catch (const Exception& e) {
+        // Library dependency is probably missing. We silently skip this library.
+        LogInfo("Could not load library: " << libPath << " " << e.getMessage());
+    }
+
+    auto dependencies = getProtectedDependencies(protected_, modules);
+    protected_.insert(dependencies.begin(), dependencies.end());
+
+    registerModules(std::move(modules));
+}
+
 void ModuleManager::unregisterModules() {
     onModulesWillUnregister_.invoke();
     app_->getProcessorNetwork()->clear();
