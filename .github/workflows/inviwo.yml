@@ -3,11 +3,18 @@ name: Build Inviwo
 on: 
   push:
   workflow_dispatch:
+  workflow_call:
 
 env:
   BUILD_TYPE: Release
   VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'         # recognized by vcpkg
   # QT_DEBUG_PLUGINS: 1                                        # print qt plugin debug info
+
+inputs:
+  ext_modules_path:
+    description: "External modules path"
+    required: false
+    default: ""
 
 jobs:
   build:
@@ -114,6 +121,7 @@ jobs:
     - name: Clone Inviwo
       uses: actions/checkout@v2
       with: 
+        repository: 'inviwo/inviwo'
         path: inviwo
         submodules: recursive
         
@@ -152,5 +160,3 @@ jobs:
       with:
         name: inviwo-python-api
         path: build/docs/python-api/*
-
-
