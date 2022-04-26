@@ -90,6 +90,7 @@ jobs:
         path: 'vcpkg' # The cmake vcpkg present expects vcpkg to be next to the inviwo source folder
     
     # Cache built dependencies for faster subsequent builds
+    # TODO: change back xeTaiz -> inviwo
     - name: 'Setup NuGet Credentials'
       shell: bash
       run: >
@@ -122,6 +123,7 @@ jobs:
         version: 6.2.3
         dir: ${{ github.workspace }}
     
+    # TODO: Replace to use official inviwo/inviwo repo
     - name: Clone Inviwo
       uses: actions/checkout@v2
       with: 
