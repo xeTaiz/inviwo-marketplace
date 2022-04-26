@@ -125,7 +125,7 @@ jobs:
     - name: Clone Inviwo
       uses: actions/checkout@v2
       with: 
-        repository: 'inviwo/inviwo'
+        repository: 'xeTaiz/inviwo-marketplace'
         path: inviwo
         submodules: recursive
         
