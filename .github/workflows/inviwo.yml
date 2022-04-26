@@ -28,7 +28,7 @@ jobs:
             mono: ''
             cmake: '--preset msvc-dev-vcpkg -DIVW_MODULE_HDF5=ON -DIVW_DOXYGEN_PROJECT=ON 
                     -DIVW_DOXYGEN_LATEX_PATH="C:/tools/TinyTeX/bin/win32/pdflatex.exe"
-                    -DIVW_EXTERNAL_MODULES=${{inputs.ext_modules_path}}'
+                    -DIVW_EXTERNAL_MODULES="${{inputs.ext_modules_path}}"'
             targets: 'ALL_BUILD DOXY-Inviwo DOXY-Python package'
             installer: 'inviwo-installer-win'
             artifact: 'build/inviwo-v*.exe'
@@ -36,7 +36,7 @@ jobs:
             triplet: 'x64-osx'
             mono: 'mono'
             cmake: '--preset ninja-dev-vcpkg -DIVW_MODULE_HDF5=OFF
-                    -DIVW_EXTERNAL_MODULES=${{inputs.ext_modules_path}}'
+                    -DIVW_EXTERNAL_MODULES="${{inputs.ext_modules_path}}"'
             targets: 'all package'
             installer: 'inviwo-installer-macos'
             artifact: 'build/Inviwo-v*.dmg'
@@ -46,7 +46,7 @@ jobs:
             # Disable benchmark for now due to error: 
             # memcpy’ is not a member of ‘std’; did you mean ‘wmemcpy’
             cmake: '--preset ninja-dev-vcpkg -DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF -DIVW_TEST_BENCHMARKS=OFF
-                    -DIVW_EXTERNAL_MODULES=${{inputs.ext_modules_path}}' 
+                    -DIVW_EXTERNAL_MODULES="${{inputs.ext_modules_path}}"' 
             targets: 'all package'
             installer: 'inviwo-installer-ubuntu'
             artifact: 'build/inviwo-v*.zip'
