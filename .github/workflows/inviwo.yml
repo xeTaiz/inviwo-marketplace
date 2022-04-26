@@ -90,7 +90,7 @@ jobs:
         path: 'vcpkg' # The cmake vcpkg present expects vcpkg to be next to the inviwo source folder
     
     # Cache built dependencies for faster subsequent builds
-    # TODO: change back xeTaiz -> inviwo
+    # TODO: change back xeTaiz -> inviwo, NUGET_KEY -> GITHUB_SECRET
     - name: 'Setup NuGet Credentials'
       shell: bash
       run: >
@@ -100,7 +100,7 @@ jobs:
         -storepasswordincleartext
         -name "GitHub"
         -username "xeTaiz"
-        -password "${{ secrets.GITHUB_TOKEN }}"
+        -password "${{ secrets.NUGET_KEY }}"
 
     - name: Apt Install, switch to gcc-11
       shell: bash
