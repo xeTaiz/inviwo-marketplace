@@ -58,12 +58,15 @@ ivw_add_unittest(${TEST_FILES})
 
 ivw_create_module(${SOURCE_FILES} ${MOCED_FILES} ${HEADER_FILES} ${SHADER_FILES})
 if(QT_VERSION_MAJOR EQUAL 6)
-    ivw_qt_add_to_install(inviwo-module-marketplace Qt6Core Qt6Gui Qt6Widgets Qt6Network Qt6Core5Compat)
     target_link_libraries(inviwo-module-marketplace PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network Qt6::Core5Compat QuaZip::QuaZip)
 else()
-     ivw_qt_add_to_install(inviwo-module-marketplace Qt5Core Qt5Gui Qt5Widgets Qt5Network)
     target_link_libraries(inviwo-module-marketplace PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network QuaZip::QuaZip)
 endif()
+
+ivw_deploy_qt(inviwo-module-marketplace)
+
+ivw_make_package(InviwoOpenGLQtModule inviwo-module-marketplace)
+ivw_default_install_targets(inviwo-module-marketplace)
 
 # Add shader directory to install package
 #ivw_add_to_module_pack(${CMAKE_CURRENT_SOURCE_DIR}/glsl)
