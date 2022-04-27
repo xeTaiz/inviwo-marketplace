@@ -3,7 +3,7 @@ ivw_module(Marketplace)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui Widgets Network REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets Network REQUIRED)
 if(QT_VERSION_MAJOR EQUAL 6)
-    find_package(Qt6 COMPONENTS Core5Compat REQUIRED)
+    find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 endif()
 
 
@@ -63,11 +63,22 @@ ivw_qt_add_to_install(inviwo-module-marketplace
     Qt${QT_VERSION_MAJOR}Gui 
     Qt${QT_VERSION_MAJOR}Widgets 
     Qt${QT_VERSION_MAJOR}Network)
-target_link_libraries(inviwo-module-marketplace PRIVATE 
-    Qt${QT_VERSION_MAJOR}::Core 
-    Qt${QT_VERSION_MAJOR}::Gui 
-    Qt${QT_VERSION_MAJOR}::Widgets 
-    Qt${QT_VERSION_MAJOR}::Network  QuaZip::QuaZip)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    target_link_libraries(inviwo-module-marketplace PRIVATE 
+    Qt6::Core 
+    Qt6::Gui 
+    Qt6::Widgets 
+    Qt6::Network  
+    Qt6::Core5Compat
+    QtQuaZip::QuaZip)
+else()
+    target_link_libraries(inviwo-module-marketplace PRIVATE 
+        Qt5::Core 
+        Qt5::Gui 
+        Qt5::Widgets 
+        Qt5::Network  QuaZip::QuaZip)
+endif()
 
 
 ivw_deploy_qt(inviwo-module-marketplace)
