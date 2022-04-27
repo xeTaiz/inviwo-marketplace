@@ -97,11 +97,10 @@ jobs:
         ${{ matrix.mono }} `vcpkg fetch nuget | tail -n 1`
         sources add
         -source "https://nuget.pkg.github.com/xeTaiz/index.json"
-        -storepasswordincleartext
+        -store-password-in-clear-text
         -name "GitHub"
         -username "xeTaiz"
-        -password "${{ secrets.NUGET_PAT }}"
-        --debug
+        -password "${{ secrets.GITHUB_TOKEN}}"
 
     - name: Apt Install, switch to gcc-11
       shell: bash
