@@ -23,7 +23,7 @@
         "IVW_MODULE_DATAFRAMEPYTHON":       {"type": "BOOL", "value": "ON"},
         "IVW_PACKAGE_EMBED_PYTHON":         {"type": "BOOL", "value": "ON"},
         "IVW_APP_PYTHON":                   {"type": "BOOL", "value": "ON"},
-        "IVW_MODULE_MARKETPLACE":           {"type": "BOOL", "value": "ON"},
+        "IVW_MODULE_MARKETPLACE":           {"type": "BOOL", "value": "OFF"},
         "IVW_USE_EXTERNAL_ASSIMP":          {"type": "BOOL", "value": "ON"},
         "IVW_USE_EXTERNAL_BENCHMARK":       {"type": "BOOL", "value": "ON"},
         "IVW_USE_EXTERNAL_EIGEN":           {"type": "BOOL", "value": "ON"},
