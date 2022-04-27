@@ -122,6 +122,7 @@ jobs:
       with:
         version: 6.2.3
         dir: ${{ github.workspace }}
+        modules: 'core5compat'
     
     # TODO: Replace to use official inviwo/inviwo repo
     - name: Clone Inviwo
