@@ -2,6 +2,9 @@ ivw_module(Marketplace)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui Widgets Network REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets Network REQUIRED)
+if(QT_VERSION_MAJOR EQUAL 6)
+    find_package(Qt6 COMPONENTS Core5Compat REQUIRED)
+endif()
 
 
 
