@@ -100,7 +100,8 @@ jobs:
         -storepasswordincleartext
         -name "GitHub"
         -username "xeTaiz"
-        -password "${{ secrets.NUGET_KEY }}"
+        -password "${{ secrets.NUGET_PAT }}"
+        --debug
 
     - name: Apt Install, switch to gcc-11
       shell: bash
