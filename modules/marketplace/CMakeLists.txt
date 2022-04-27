@@ -67,5 +67,10 @@ target_link_libraries(inviwo-module-marketplace PRIVATE
     Qt${QT_VERSION_MAJOR}::Network  QuaZip::QuaZip)
 
 
+ivw_deploy_qt(inviwo-module-marketplace)
+
+ivw_make_package(InviwoOpenGLQtModule inviwo-module-marketplace)
+ivw_default_install_targets(inviwo-module-marketplace)
+
 # Add shader directory to install package
 #ivw_add_to_module_pack(${CMAKE_CURRENT_SOURCE_DIR}/glsl)
