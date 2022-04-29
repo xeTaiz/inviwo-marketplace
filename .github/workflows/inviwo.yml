@@ -10,6 +10,10 @@ on:
         required: false
         type: string
         default: ""
+      ext_modules_repo:
+        description: "Repositories for external modules"
+        required: false
+        type: string
 
 env:
   BUILD_TYPE: Release
@@ -27,16 +31,14 @@ jobs:
             triplet: 'x64-windows'
             mono: ''
             cmake: '--preset msvc-dev-vcpkg -DIVW_MODULE_HDF5=ON -DIVW_DOXYGEN_PROJECT=ON 
-                    -DIVW_DOXYGEN_LATEX_PATH="C:/tools/TinyTeX/bin/win32/pdflatex.exe"
-                    -DIVW_EXTERNAL_MODULES="${{inputs.ext_modules_path}}"'
+                    -DIVW_DOXYGEN_LATEX_PATH="C:/tools/TinyTeX/bin/win32/pdflatex.exe"'
             targets: 'ALL_BUILD DOXY-Inviwo DOXY-Python package'
             installer: 'inviwo-installer-win'
             artifact: 'build/inviwo-v*.exe'
           - os: 'macos-latest'
             triplet: 'x64-osx'
             mono: 'mono'
-            cmake: '--preset ninja-dev-vcpkg -DIVW_MODULE_HDF5=OFF
-                    -DIVW_EXTERNAL_MODULES="${{inputs.ext_modules_path}}"'
+            cmake: '--preset ninja-dev-vcpkg -DIVW_MODULE_HDF5=OFF'
             targets: 'all package'
             installer: 'inviwo-installer-macos'
             artifact: 'build/Inviwo-v*.dmg'
@@ -45,8 +47,7 @@ jobs:
             mono: 'mono'
             # Disable benchmark for now due to error: 
             # memcpy’ is not a member of ‘std’; did you mean ‘wmemcpy’
-            cmake: '--preset ninja-dev-vcpkg -DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF -DIVW_TEST_BENCHMARKS=OFF
-                    -DIVW_EXTERNAL_MODULES="${{inputs.ext_modules_path}}"' 
+            cmake: '--preset ninja-dev-vcpkg -DIVW_USE_SIGAR=OFF -DIVW_MODULE_HDF5=OFF -DIVW_TEST_BENCHMARKS=OFF' 
             targets: 'all package'
             installer: 'inviwo-installer-ubuntu'
             artifact: 'build/inviwo-v*.zip'
@@ -56,6 +57,18 @@ jobs:
     timeout-minutes: 360
     
     steps:
+    - name: Create external modules folder
+      run: mkdir ${{ github.workspace }}/external_modules
+      
+    - name: Clone External Module
+      if: ${{ ! inputs.ext_modules_repo == 0 }}
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ inputs.ext_modules_repo }}
+        path: ${{ github.workspace}}/external_modules/module
+        submodules: recursive
+
+
     - name: Chocolatey Install 
       if: runner.os == 'Windows'
       shell: bash
@@ -138,6 +151,7 @@ jobs:
         cmake -S inviwo -B build
         -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        -DIVW_EXTERNAL_MODULES="${{ github.workspace }}/external_modules"
         ${{ matrix.cmake }}
 
     - name: Setup C++ Log matchers
