@@ -151,6 +151,19 @@ jobs:
         ref: updated
         path: inviwo
         submodules: recursive
+
+    - name: Fetch Inviwo SHA
+      working-directory: inviwo
+      id: ivw-ref
+      run: |
+        sha=$(git log -1 '--format=format:%H)
+        echo "::set-output name=sha::$sha'
+
+    - name: Cache Build Directory
+      uses: actions/cache@v3
+      with:
+        path: build
+        key: ${{ matrix.os }}-${{ steps.ivw-ref.outputs.sha }}
         
     - name: Configure CMake
       shell: bash
