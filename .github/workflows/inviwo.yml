@@ -155,9 +155,7 @@ jobs:
     - name: Fetch Inviwo SHA
       working-directory: inviwo
       id: ivw-ref
-      run: |
-        sha=$(git log -1 '--format=format:%H)
-        echo "::set-output name=sha::$sha'
+      run: echo "::set-output name=sha::$(git log -1 '--format=format:%H')"
 
     - name: Cache Build Directory
       uses: actions/cache@v3
