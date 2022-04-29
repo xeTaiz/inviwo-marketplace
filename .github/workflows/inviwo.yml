@@ -172,6 +172,7 @@ jobs:
     - name: Upload Build Dir Artifact
       if: ${{ ! inputs.ext_modules_repo == 0 }}
       uses: actions/upload-artifact@v3
+      with:
         name: ${{ matrix.builddir }}
         path: ${{ matrix.bartifact }}
 
