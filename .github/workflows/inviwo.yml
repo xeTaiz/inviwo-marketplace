@@ -5,11 +5,6 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      ext_modules_path:
-        description: "External modules path"
-        required: false
-        type: string
-        default: ""
       ext_modules_repo:
         description: "Repositories for external modules"
         required: false
@@ -183,6 +178,8 @@ jobs:
     - name: Upload Build Dir Artifact
       if: ${{ ! inputs.ext_modules_repo == 0 }}
       uses: actions/upload-artifact@v3
+      env:
+        NODE_OPTIONS: '--max_old_space_size=4096'
       with:
         name: ${{ matrix.builddir }}
         path: ${{ matrix.bartifact }}
