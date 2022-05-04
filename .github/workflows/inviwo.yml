@@ -9,6 +9,11 @@ on:
         description: "Repositories for external modules"
         required: false
         type: string
+      ext_module_name:
+        description: "Name of external module to build and store as artifact"
+        required: false
+        type: string
+      
 
 env:
   BUILD_TYPE: Release
@@ -21,6 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-20.04]
+        bamodule: 'build/modules/${{ inputs.ext_module_name }}'
         include:
           - os: 'windows-latest'
             triplet: 'x64-windows'
@@ -30,8 +36,8 @@ jobs:
             targets: 'ALL_BUILD DOXY-Inviwo DOXY-Python package'
             installer: 'inviwo-installer-win'
             artifact: 'build/inviwo-v*.exe'
-            builddir: 'build-dir-win'
-            bartifact: 'build/'
+            builddir: 'ext-module-win'
+            balib: '/build/bin/Release/inviwo-module-${{ inputs.ext_module_name }}.dll'
           - os: 'macos-latest'
             triplet: 'x64-osx'
             mono: 'mono'
@@ -39,8 +45,8 @@ jobs:
             targets: 'all package'
             installer: 'inviwo-installer-macos'
             artifact: 'build/Inviwo-v*.dmg'
-            builddir: 'build-dir-macos'
-            bartifact: 'build/'
+            baname: 'ext-module-macos'
+            balib: 'build/lib/libinviwo-module-${{ inputs.ext_module_name }}.so'
           - os: 'ubuntu-20.04'
             triplet: 'x64-linux'
             mono: 'mono'
@@ -50,8 +56,8 @@ jobs:
             targets: 'all package'
             installer: 'inviwo-installer-ubuntu'
             artifact: 'build/inviwo-v*.zip'
-            builddir: 'build-dir-ubuntu'
-            bartifact: 'build/'
+            baname: 'ext-module-ubuntu'
+            balib: 'build/lib/libinviwo-module-${{ inputs.ext_module_name }}.so'
       fail-fast: false
       
     runs-on: ${{ matrix.os }}
@@ -178,11 +184,11 @@ jobs:
     - name: Upload Build Dir Artifact
       if: ${{ ! inputs.ext_modules_repo == 0 }}
       uses: actions/upload-artifact@v3
-      env:
-        NODE_OPTIONS: '--max_old_space_size=4096'
       with:
-        name: ${{ matrix.builddir }}
-        path: ${{ matrix.bartifact }}
+        name: ${{ matrix.baname }}
+        path: |
+          ${{ matrix.balib }}
+          ${{ matrix.bamodule }}
 
     - name: Upload installer
       uses: actions/upload-artifact@v2
