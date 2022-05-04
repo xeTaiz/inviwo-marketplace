@@ -26,7 +26,6 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-20.04]
-        bamodule: ['build/modules/${{ inputs.ext_module_name }}']
         include:
           - os: 'windows-latest'
             triplet: 'x64-windows'
@@ -38,6 +37,7 @@ jobs:
             artifact: 'build/inviwo-v*.exe'
             builddir: 'ext-module-win'
             balib: '/build/bin/Release/inviwo-module-${{ inputs.ext_module_name }}.dll'
+            bamodule: 'build/modules/${{ inputs.ext_module_name }}'
           - os: 'macos-latest'
             triplet: 'x64-osx'
             mono: 'mono'
@@ -47,6 +47,7 @@ jobs:
             artifact: 'build/Inviwo-v*.dmg'
             baname: 'ext-module-macos'
             balib: 'build/lib/libinviwo-module-${{ inputs.ext_module_name }}.so'
+            bamodule: 'build/modules/${{ inputs.ext_module_name }}'
           - os: 'ubuntu-20.04'
             triplet: 'x64-linux'
             mono: 'mono'
@@ -58,6 +59,7 @@ jobs:
             artifact: 'build/inviwo-v*.zip'
             baname: 'ext-module-ubuntu'
             balib: 'build/lib/libinviwo-module-${{ inputs.ext_module_name }}.so'
+            bamodule: 'build/modules/${{ inputs.ext_module_name }}'
       fail-fast: false
       
     runs-on: ${{ matrix.os }}
