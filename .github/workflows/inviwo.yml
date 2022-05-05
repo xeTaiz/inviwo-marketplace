@@ -13,6 +13,10 @@ on:
         description: "Name of external module to build and store as artifact"
         required: false
         type: string
+      ext_module_cmake:
+        description: "CMake string of external module, i.e. -DIVW_MODULE_MODULENAME=ON"
+        required: false
+        type: string
       
 
 env:
@@ -173,6 +177,7 @@ jobs:
         -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
         -DIVW_EXTERNAL_MODULES="${{ github.workspace }}/external_modules"
+        ${{ inputs.ext_module_cmake }}
         ${{ matrix.cmake }}
 
     - name: Setup C++ Log matchers
