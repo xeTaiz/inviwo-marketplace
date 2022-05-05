@@ -35,7 +35,7 @@ jobs:
             targets: 'ALL_BUILD DOXY-Inviwo DOXY-Python package'
             installer: 'inviwo-installer-win'
             artifact: 'build/inviwo-v*.exe'
-            builddir: 'ext-module-win'
+            baname: 'ext-module-win'
             balib: '/build/bin/Release/inviwo-module-${{ inputs.ext_module_name }}.dll'
             bamodule: 'build/modules/${{ inputs.ext_module_name }}'
           - os: 'macos-latest'
@@ -182,6 +182,14 @@ jobs:
       timeout-minutes: 360
       shell: bash
       run: cmake --build build --config ${{ env.BUILD_TYPE }} --parallel --target ${{ matrix.targets }}
+
+    - name: Log stuff
+      run: |
+        echo ${{inputs.ext_module_name }}
+        ls -l build/
+        ls -l build/bin
+        ls -l build/lib
+        ls -l build/modules
 
     - name: Upload Build Dir Artifact
       if: ${{ ! inputs.ext_modules_repo == 0 }}
