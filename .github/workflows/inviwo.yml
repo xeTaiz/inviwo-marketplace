@@ -188,14 +188,6 @@ jobs:
       shell: bash
       run: cmake --build build --config ${{ env.BUILD_TYPE }} --parallel --target ${{ matrix.targets }}
 
-    - name: Log stuff
-      run: |
-        echo ${{inputs.ext_module_name }}
-        ls -l build/
-        ls -l build/bin
-        ls -l build/lib
-        ls -l build/modules
-
     - name: Upload Build Dir Artifact
       if: ${{ ! inputs.ext_modules_repo == 0 }}
       uses: actions/upload-artifact@v3
