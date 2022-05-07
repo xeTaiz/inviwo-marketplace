@@ -40,7 +40,7 @@ jobs:
             installer: 'inviwo-installer-win'
             artifact: 'build/inviwo-v*.exe'
             baname: 'ext-module-win'
-            balib: '/build/bin/Release/inviwo-module-${{ inputs.ext_module_name }}.dll'
+            balib: 'build/bin/Release/inviwo-module-${{ inputs.ext_module_name }}.dll'
             bamodule: 'build/modules/${{ inputs.ext_module_name }}'
           - os: 'macos-latest'
             triplet: 'x64-osx'
