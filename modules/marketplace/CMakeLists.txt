@@ -71,7 +71,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
     Qt6::Widgets 
     Qt6::Network  
     Qt6::Core5Compat
-    QtQuaZip::QuaZip)
+    QuaZip::QuaZip)
 else()
     target_link_libraries(inviwo-module-marketplace PRIVATE 
         Qt5::Core 
