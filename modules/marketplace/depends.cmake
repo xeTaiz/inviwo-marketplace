@@ -18,3 +18,4 @@ set(dependencies
 # By calling set(EnableByDefault ON) the module will be set to enabled
 # when initially being added to CMake. Default OFF.
 #set(EnableByDefault OFF)
+set(EnableByDefault ON)
