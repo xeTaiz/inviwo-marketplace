@@ -6,10 +6,6 @@ if(QT_VERSION_MAJOR EQUAL 6)
     find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 endif()
 
-
-
-find_package(QuaZip)
-
 set(HEADER_FILES
     include/inviwo/marketplace/downloadmanager.h
     include/inviwo/marketplace/marketbinmodulewidgetqt.h
@@ -64,8 +60,8 @@ ivw_register_license_file(NAME "QuaZip" VERSION ${QuaZip_VERSION} MODULE Marketp
     TYPE "GNU LGP v2.1"
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/ext/quazip/COPYING
 )
-ivw_default_install_targets(QuaZip)
-ivw_make_package(QuaZip QuaZip)
+ivw_default_install_targets(quazip)
+ivw_make_package(QuaZip quazip)
 
 ivw_qt_add_to_install(inviwo-module-marketplace 
     Qt${QT_VERSION_MAJOR}Core 
