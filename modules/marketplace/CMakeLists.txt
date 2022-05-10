@@ -58,6 +58,15 @@ ivw_add_unittest(${TEST_FILES})
 
 ivw_create_module(${SOURCE_FILES} ${MOCED_FILES} ${HEADER_FILES} ${SHADER_FILES})
 
+add_subdirectory(ext/quazip)
+ivw_register_license_file(NAME "QuaZip" VERSION ${QuaZip_VERSION} MODULE QuaZip
+    URL https://stachenov.github.io/quazip/
+    TYPE "GNU LGP v2.1"
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/ext/quazip/COPYING
+)
+ivw_default_install_targets(QuaZip)
+ivw_make_package(QuaZip QuaZip)
+
 ivw_qt_add_to_install(inviwo-module-marketplace 
     Qt${QT_VERSION_MAJOR}Core 
     Qt${QT_VERSION_MAJOR}Gui 
@@ -80,10 +89,9 @@ else()
         Qt5::Network  QuaZip::QuaZip)
 endif()
 
-
 ivw_deploy_qt(inviwo-module-marketplace)
 
-ivw_make_package(InviwoOpenGLQtModule inviwo-module-marketplace)
+ivw_make_package(InviwoMarketplaceModule inviwo-module-marketplace)
 ivw_default_install_targets(inviwo-module-marketplace)
 
 # Add shader directory to install package
