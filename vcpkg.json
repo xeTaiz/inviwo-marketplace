@@ -24,7 +24,6 @@
         "nlohmann-json",
         "nifticlib",
         "openexr",
-        "python3",
         "pybind11",
         "roaring",
         "tclap",
