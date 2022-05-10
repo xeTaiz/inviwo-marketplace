@@ -8,7 +8,7 @@ endif()
 
 
 
-# find_package(QuaZip)
+find_package(QuaZip)
 
 set(HEADER_FILES
     include/inviwo/marketplace/downloadmanager.h
@@ -59,7 +59,7 @@ ivw_add_unittest(${TEST_FILES})
 ivw_create_module(${SOURCE_FILES} ${MOCED_FILES} ${HEADER_FILES} ${SHADER_FILES})
 
 add_subdirectory(ext/quazip)
-ivw_register_license_file(NAME "QuaZip" VERSION ${QuaZip_VERSION} MODULE QuaZip
+ivw_register_license_file(NAME "QuaZip" VERSION ${QuaZip_VERSION} MODULE Marketplace
     URL https://stachenov.github.io/quazip/
     TYPE "GNU LGP v2.1"
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/ext/quazip/COPYING
