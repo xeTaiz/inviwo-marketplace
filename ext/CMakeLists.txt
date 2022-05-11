@@ -307,11 +307,3 @@ if(Python3_Development_FOUND)
         ivw_vcpkg_install(pybind11 COPYRIGHT copyright/LICENSE MODULE Core EXT)
     endif()
 endif()
-
-add_subdirectory(quazip)     # No package available
-ivw_register_license_file(NAME "quazip" MODULE Core EXT
-    URL "https://github.com/stachenov/quazip"
-    TYPE "GNU LESSER GENERAL PUBLIC LICENSE"
-    FILES ${IVW_EXTENSIONS_DIR}/quazip/COPYING
-)
-ivw_register_package(quazip QuaZip::QuaZip)

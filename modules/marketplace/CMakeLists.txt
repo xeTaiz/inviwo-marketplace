@@ -58,10 +58,10 @@ add_subdirectory(ext/quazip)
 ivw_register_license_file(NAME "QuaZip" VERSION ${QuaZip_VERSION} MODULE Marketplace
     URL https://stachenov.github.io/quazip/
     TYPE "GNU LGP v2.1"
-    FILES ${CMAKE_CURRENT_SOURCE_DIR}/ext/quazip/COPYING
+    FILES ext/quazip/COPYING
 )
-ivw_default_install_targets(quazip)
-ivw_make_package(QuaZip quazip)
+ivw_default_install_targets(QuaZip)
+ivw_make_package(QuaZip QuaZip)
 
 ivw_qt_add_to_install(inviwo-module-marketplace 
     Qt${QT_VERSION_MAJOR}Core 
