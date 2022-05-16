@@ -50,6 +50,9 @@
 #include <QObject>
 
 #include <quazip/quazip.h>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann:json;
 
 namespace inviwo {
 
@@ -93,6 +96,23 @@ std::optional<std::filesystem::path> MarketManager::getMarketDir() const {
     } else {
         return std::nullopt;
     }
+}
+
+std::optional<std::filesystem::path> MarketManager::getSharedLibraryPath(const BinaryModule& data) {
+    auto marketPath = getMarketDir();
+    if (!marketPath) {
+        LogInfo(
+            "No valid Marketplace Directory set. Navigate to View > Settings > Marketplace and "
+            "provide a path for the Marketplace.");
+        return 1;
+    }
+    std::filesystem::path moduleDir(*marketPath / data.name);
+#ifdef _WIN32
+    std::filesystem::path path(*moduleDir / ("inviwo-module-" + data.name + "module.dll"));
+#else
+    std::filesystem::path path(*moduleDir / ("libinviwo-module-" + data.name + "module.so"));
+#endif
+    return path;
 }
 
 std::optional<std::string> MarketManager::gitClone(const std::string& url,
@@ -202,63 +222,31 @@ void MarketManager::updateModuleBinData() {
             "provide a path for the Marketplace.");
         return;
     }
-    // Get inviwo-marketplace if not in marketPath
-    if (!std::filesystem::exists(*marketPath / "inviwo-marketplace")) {
-        const auto dir_name_ = gitClone(repositoryUrl_, marketPath->string());
-        if (!dir_name_) {
-            LogInfo("Unable to clone " + repositoryUrl_);
-            return;
-        }
-    }
     // Read module URLs from inviwo-marketplace
-    const auto path = *marketPath / "inviwo-marketplace" / "bin_modules.txt";
+    const auto path = *marketPath / "mdoules.json";
     std::ifstream file;
     file.open(path.string(), std::ios::in);
     if (!file.is_open()) {
         LogInfo("Could not open " + path.string());
         return;
     }
-    std::string tmp;
-    std::vector<std::string> urls;
-    while (file >> tmp) {
-        urls.emplace_back(tmp);
-        util::log(IVW_CONTEXT, "Found module URL " + tmp, LogLevel::Info, LogAudience::User);
-    }
-    // Populate binModules_
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    auto j = json::parse(buffer.str());
     binModules_.clear();
-    for (auto url : urls) {
-        auto moduleName = url.substr(url.rfind('/') + 1);
-        size_t pos = moduleName.find("inviwo");
-        if (pos != std::string::npos) {
-            moduleName.erase(pos, 6);
+    try {
+        for(auto& module : j) {
+            binModules_.push_back(module.get<BinaryModule>());
         }
-        pos = moduleName.find("module");
-        if (pos != std::string::npos) {
-            moduleName.erase(pos, 6);
-        }
-        pos = moduleName.find(".zip");
-        if (pos != std::string::npos) {
-            moduleName.erase(pos, 4);
-        }
-        moduleName.erase(std::remove(moduleName.begin(), moduleName.end(), '-'), moduleName.end());
-#ifdef _WIN32
-        std::filesystem::path path(*marketPath / moduleName / ("inviwo-module-" + moduleName + "module.dll"));
-#else
-        std::filesystem::path path(*marketPath / moduleName / ("libinviwo-module-" + moduleName + "module.so"));
-#endif
-        LogInfo("Looking for path: " << path.string());
-        if (std::filesystem::exists(path)) {
-            binModules_.push_back({url, moduleName, path});
-        } else {
-            binModules_.push_back({url, moduleName, std::nullopt});
-        }
+    } catch (json::exception& ex) {
+        LogError(ex.what());
     }
 }
 
 const std::vector<ModuleSrcData> MarketManager::getSrcModules() const {
     return srcModules_;
 }
-const std::vector<ModuleBinData> MarketManager::getBinModules() const {
+const std::vector<BinaryModule> MarketManager::getBinModules() const {
     return binModules_;
 }
 
@@ -395,7 +383,7 @@ int MarketManager::cmakeConfigure(const ModuleSrcData& data) {
     return process.exitCode();
 }
 
-int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
+int MarketManager::downloadBinaryModule(const BinaryModule& data) {
     auto marketPath = getMarketDir();
     if (!marketPath) {
         LogInfo(
@@ -403,13 +391,12 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
             "provide a path for the Marketplace.");
         return 1;
     }
-    std::filesystem::path moduleDir;
-    if (data.path){
-        LogInfo(*data.path);
-        moduleDir = *data.path;
-    } else {
-        moduleDir = *marketPath / data.name;
-    }
+    std::filesystem::path moduleDir(*marketPath / data.name);
+#ifdef _WIN32
+        std::filesystem::path path(*moduleDir / ("inviwo-module-" + data.name + "module.dll"));
+#else
+        std::filesystem::path path(*moduleDir / ("libinviwo-module-" + data.name + "module.so"));
+#endif
     LogInfo("ModuleDir: " << moduleDir.string());
     if (!std::filesystem::exists(moduleDir)) {
         std::filesystem::create_directory(moduleDir);
@@ -418,8 +405,6 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
 
     auto zipPath = moduleDir / (data.name + ".zip");
     dlManager_.download(data.url, zipPath.string());
-
-
 
     // LogInfo("Download done. Unzipping");
 
@@ -452,10 +437,11 @@ int MarketManager::downloadBinaryModule(const ModuleBinData& data) {
     return 0;
 }
 
-void MarketManager::tryLoadModule(const ModuleBinData& data) {
-    if (data.path) {
-        LogInfo("trying to load " << data.path->string());
-        app_->getModuleManager().tryRegisterModule(data.path->string());
+void MarketManager::tryLoadModule(const BinaryModule& data) {
+    auto path = getSharedLibraryPath(data);
+    if (path) {
+        LogInfo("trying to load " << path->string());
+        app_->getModuleManager().tryRegisterModule(path->string());
     } else {
         LogInfo("Binary Module " << data.name << " has invalid path.");
     }

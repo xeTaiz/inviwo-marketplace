@@ -54,6 +54,14 @@ struct ModuleBinData {
     std::optional<std::filesystem::path> path;
 };
 
+struct BinaryModule {
+    std::string name;
+    std::string description;
+    std::string url;
+    bool downloaded;
+    bool enabled;
+}
+
 /**
  * \brief Handles Marketplace Modules
  * Provides functions to update available modules, downloading, building and loading
@@ -75,9 +83,10 @@ public:
 
     // Binary Market
     void updateModuleBinData();
-    int downloadBinaryModule(const ModuleBinData&);
-    void tryLoadModule(const ModuleBinData&);
-    const std::vector<ModuleBinData> getBinModules() const;
+    int downloadBinaryModule(const BinaryModule&);
+    void tryLoadModule(const BinaryModule&);
+    const std::vector<BinaryModule> getBinModules() const;
+    const std::filesystem::path getSharedLibraryPath() const;
 
 private:
     InviwoApplication* app_;
@@ -85,7 +94,7 @@ private:
     std::filesystem::path inviwoSourcePath_;
     std::string repositoryUrl_;
     std::vector<ModuleSrcData> srcModules_;
-    std::vector<ModuleBinData> binModules_;
+    std::vector<BinaryModule> binModules_;
 };
 
 }  // namespace inviwo
